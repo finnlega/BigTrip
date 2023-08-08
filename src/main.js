@@ -34,9 +34,7 @@ listPoint.classList.add('trip-events__list');
 sorting.appendChild(listPoint);
 
 for (let i = 0; i < 3; i++) {
-  const element = render(listPoint, createListPointTripTemplate(), 'beforeend');
-  const newElement = document.createElement(element);
-  listPoint.appendChild(newElement);
+  render(listPoint, createListPointTripTemplate(), 'beforeend');
 }
 
 

@@ -5,6 +5,7 @@ import { createFilterTemplate } from './view/filters';
 import { createSortingTemplate } from './view/sorting';
 import { CreateFormAddNewPointTemplate } from './view/add-new-point';
 import { editPointTripTemplate } from './view/edit-point';
+import { createListPointTripTemplate } from './view/list-point-trip';
 
 // Отрисовка компонента на странице
 
@@ -26,5 +27,15 @@ render(tripControls, createMenuTemplate(), 'beforeend');
 render(tripFilters, createFilterTemplate(), 'beforeend');
 render(sorting, createSortingTemplate(), 'beforeend');
 // render(sorting, CreateFormAddNewPointTemplate(), 'beforeend');
-render(sorting, editPointTripTemplate(), 'beforeend');
-//
+// render(sorting, editPointTripTemplate(), 'beforeend');
+
+const listPoint = document.createElement('ul');
+listPoint.classList.add('trip-events__list');
+sorting.appendChild(listPoint);
+
+// render(listPoint, createListPointTripTemplate(), 'beforeend');
+
+for (let i = 0; i < 3; i++) {
+  render(listPoint, createListPointTripTemplate(), 'beforeend')[i];
+}
+

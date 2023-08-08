@@ -4,6 +4,7 @@ import { createCostTemplate } from './view/cost';
 import { createFilterTemplate } from './view/filters';
 import { createSortingTemplate } from './view/sorting';
 import { CreateFormAddNewPointTemplate } from './view/add-new-point';
+import { editPointTripTemplate } from './view/edit-point';
 
 // Отрисовка компонента на странице
 
@@ -24,5 +25,6 @@ render(tripInfo, createCostTemplate(), 'beforeend');
 render(tripControls, createMenuTemplate(), 'beforeend');
 render(tripFilters, createFilterTemplate(), 'beforeend');
 render(sorting, createSortingTemplate(), 'beforeend');
-render(sorting, CreateFormAddNewPointTemplate(), 'beforeend');
+// render(sorting, CreateFormAddNewPointTemplate(), 'beforeend');
+render(sorting, editPointTripTemplate(), 'beforeend');
 //

@@ -1,4 +1,4 @@
-const CreateFormAddNewPointTemplate = () =>
+const createFormAddNewPointTemplate = () =>
   `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -164,5 +164,5 @@ const CreateFormAddNewPointTemplate = () =>
       </section>
     </section>
   </form>`;
-export { CreateFormAddNewPointTemplate };
+export { createFormAddNewPointTemplate };
 //

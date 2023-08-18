@@ -39,5 +39,5 @@ for (let i = 0; i < POINT_COUNT; i++) {
   render(listPoint, createPointTripTemplate());
 }
 
-console.log(result)
+console.log(result);
 

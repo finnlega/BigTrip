@@ -8,6 +8,6 @@ env:
 
 extends: 'htmlacademy/vanilla'
 
-rules:
-  arrow-body-style: ["error", "always"]
+# rules:
+#   arrow-body-style: ["error", "always"]
 

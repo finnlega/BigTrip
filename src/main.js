@@ -7,8 +7,10 @@ import { createFormAddNewPointTemplate } from './view/add-new-point';
 import { editPointTripTemplate } from './view/edit-point';
 import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';
-import { result } from './mock/point';
-const POINT_COUNT = 3;
+import { generate } from './mock/point';
+// import { getObj } from './mock/point';
+const POINT_COUNT = 8;
+
 
 // Отрисовка элемента на странице
 
@@ -39,5 +41,10 @@ for (let i = 0; i < POINT_COUNT; i++) {
   render(listPoint, createPointTripTemplate());
 }
 
-console.log(result);
+// Сгенерируем 8 точек маршрута
+
+for (let j = 0; j < POINT_COUNT; j++) {
+  const result = generate();
+  console.log(result);
+}
 

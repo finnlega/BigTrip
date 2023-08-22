@@ -5,14 +5,47 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const generateType = () => {
 
-  const typePointTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const typePointTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const destination = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
+const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast' ];
 
-  const randomIndex = getRandomInteger(0, typePointTrip.length - 1);
 
-  return typePointTrip[randomIndex];
+const generateType = (array) => {
+
+  const randomIndex = getRandomInteger(0, array.length - 1);
+
+  return array[randomIndex];
 };
+
+const offer = {
+  title: 'title',
+  price: 'price',
+};
+
+const getSomeOffers = () => {
+  // debugger;
+  const data = [];
+  for (let i = 0; i < getRandomInteger(0, 5); i++) {
+    data.push({
+      [offer.title] : generateType(titles),
+      [offer.price] : getRandomInteger(1, 500),
+    });
+  }
+  return data;
+};
+
+console.log(getSomeOffers());
+
+
+// const generateType = () => {
+
+//   const typePointTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+//   const randomIndex = getRandomInteger(0, typePointTrip.length - 1);
+
+//   return typePointTrip[randomIndex];
+// };
 
 // const generateOffer = () => {
 
@@ -29,129 +62,36 @@ const generateType = () => {
 
 // };
 
-const destination = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
-
 // Дополнительные опции по типу маршрута
 
-// const getOffers =  () => {
-//   for (let i = 0; i < getRandomInteger(0, titleOffer.length - 1).length; i++ ) {
+// const offer = [
+//   {
+//     type: generateType(typePointTrip),
+//     offers: [
+//       {
+//         title: generateType(OFFER.offers.title),
+//         price: getRandomInteger(1, 500),
+//       },
+//     ],
+//   },
+// ];
 
+// console.log(offer);
+
+// const checkValueInObject = (obj, value) => {
+//   const key = 'type';
+//   if (key in obj){
+//     if (value === obj.type) {
+//       return obj;
+//     }
 //   }
-// }
+// };
 
-const offer = [
-  // {
-  //   type: generateType(),
-  //   offers: generateOffer(),
-  // },
-  {
-    type: 'taxi',
-    offers: [
-      {
-        title: 'Choose meal',
-        price: 250,
-      },
-      {
-        title: 'Upgrade to comfort class',
-        price: 30,
-      },
-    ],
-  },
-  {
-    type: 'bus',
-    offers: [
-      {
-        title: 'Choose meal',
-        price: 200,
-      },
-      {
-        title: 'Upgrade to comfort class',
-        price: 60,
-      },
-    ],
-  },
-  {
-    type: 'sightseeing',
-    offers: [
-      {
-        title: 'Book tickets',
-        price: 40,
-      },
-      {
-        title: 'Lunch in city',
-        price: 30,
-      },
-    ],
-  },
-  {
-    type: 'drive',
-    offers: [
-      {
-        title: 'Rent a car',
-        price: 200,
-      },
-    ],
-  },
-  {
-    type: 'flight',
-    offers: [
-      {
-        title: 'Add luggage',
-        price: 30,
-      },
-      {
-        title: 'Switch to comfort',
-        price: 100,
-      },
-    ],
-  },
-  {
-    type: 'check-in',
-    offers: [
-      {
-        title: 'Add breakfast',
-        price: 50,
-      },
-    ],
-  },
-  {
-    type: 'train',
-    offers: [
-    ],
-  },
-  {
-    type: 'ship',
-    offers: [
-    ],
-  },
-  {
-    type: 'transport',
-    offers: [
-    ],
-  },
-  {
-    type: 'restaurant',
-    offers: [
-    ],
-  },
-];
-
-console.log(offer);
-
-const checkValueInObject = (obj, value) => {
-  const key = 'type';
-  if (key in obj){
-    if (value === obj.type) {
-      return obj;
-    }
-  }
-};
-
-const getObj = () => {
-  const valueArray = generateType();
-  const res = offer.filter((value) => checkValueInObject(value, valueArray));
-  return res[0];
-};
+// const getObj = () => {
+//   const valueArray = generateType(typePointTrip);
+//   const res = offer.filter((value) => checkValueInObject(value, valueArray));
+//   return res[0];
+// };
 
 // Описание маршрута
 
@@ -171,9 +111,9 @@ const generate = () => ({
   price: 200,
   dateFrom: null,
   dateTo: null,
-  destination: destination,
+  destination: generateType(destination),
   isFavorite: false,
-  offer: getObj(),
+  // offer: getObj(),
   idOffer: null,
   idDestination: [1],
 });

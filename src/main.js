@@ -47,4 +47,3 @@ for (let j = 0; j < POINT_COUNT; j++) {
   const result = generate();
   console.log(result);
 }
-

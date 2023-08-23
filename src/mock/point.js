@@ -6,7 +6,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 };
 
 
-const typePointTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const typePointsTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const destination = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
 const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast' ];
 
@@ -18,7 +18,7 @@ const generateType = (array) => {
   return array[randomIndex];
 };
 
-const offer = {
+const offers = {
   title: 'title',
   price: 'price',
 };
@@ -28,15 +28,20 @@ const getSomeOffers = () => {
   const data = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     data.push({
-      [offer.title] : generateType(titles),
-      [offer.price] : getRandomInteger(1, 500),
+      [offers.title] : generateType(titles),
+      [offers.price] : getRandomInteger(1, 500),
     });
   }
   return data;
 };
 
-console.log(getSomeOffers());
 
+// const getOffer = () => {
+//   const offer = { type: generateType(typePointTrip), ...getSomeOffers()};
+// console.log(offer);
+// };
+// const offer = { type: generateType(typePointTrip), ...getSomeOffers()};
+// console.log(offer);
 
 // const generateType = () => {
 
@@ -108,12 +113,12 @@ console.log(getSomeOffers());
 // };
 
 const generate = () => ({
-  price: 200,
+  basePrice: 200,
   dateFrom: null,
   dateTo: null,
   destination: generateType(destination),
   isFavorite: false,
-  // offer: getObj(),
+  offer: { type: generateType(typePointsTrip), ...getSomeOffers()},
   idOffer: null,
   idDestination: [1],
 });

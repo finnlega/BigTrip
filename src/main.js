@@ -8,7 +8,7 @@ import { editPointTripTemplate } from './view/edit-point';
 import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';
 import { generate } from './mock/point';
-// import { getObj } from './mock/point';
+
 const POINT_COUNT = 8;
 
 

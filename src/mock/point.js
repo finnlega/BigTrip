@@ -7,9 +7,20 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 
 const typePointsTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const destination = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
+const cities = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
 const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast' ];
-
+const tripDescriptions = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget.',
+  'Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra.',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+  'Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat.',
+  'Nunc fermentum tortor ac porta dapibus.',
+  'In rutrum ac purus sit amet tempus.' ];
 
 const generateType = (array) => {
 
@@ -17,6 +28,8 @@ const generateType = (array) => {
 
   return array[randomIndex];
 };
+
+// Структура данных offer
 
 const offers = {
   title: 'title',
@@ -35,7 +48,54 @@ const getSomeOffers = () => {
   return data;
 };
 
+// Структура данных информация о месте назначения:
 
+const pictures = {
+  src: 'src',
+  description: 'description',
+};
+
+// Сгенерируем картинки
+
+// const getSrc = () => {
+//   const data = [];
+//   for (let i = 0; i < getRandomInteger(1, 3); i++) {
+//     data.push(`http://picsum.photos/248/152?r=${getRandomInteger(1, 100)}`);
+//   }
+//   return data;
+// };
+
+const getDescription = (array) => {
+  // debugger;
+  const data = [];
+  for (let i = 0; i < getRandomInteger(1, 5); i++) {
+    data.push(array[i]);
+  }
+  return data;
+};
+
+console.log(getDescription(tripDescriptions));
+
+const getPictures = () => {
+  // debugger;
+  const data = [];
+  for (let i = 0; i < getRandomInteger(0, 5); i++) {
+    data.push({
+      [pictures.src] : `http://picsum.photos/248/152?r=${getRandomInteger(1, 100)}`,
+      [pictures.description] : tripDescriptions[getRandomInteger(0, 10)],
+    });
+  }
+  return data;
+};
+
+// const getPictures = () => ({
+//   pictures: ({
+//     [pictures.src] : `http://picsum.photos/248/152?r=${getRandomInteger(1, 100)}`,
+//     [pictures.description] : tripDescriptions[getRandomInteger(0, 10)],
+//   }),
+// });
+
+console.log(getPictures());
 // const getOffer = () => {
 //   const offer = { type: generateType(typePointTrip), ...getSomeOffers()};
 // console.log(offer);
@@ -116,9 +176,11 @@ const generate = () => ({
   basePrice: 200,
   dateFrom: null,
   dateTo: null,
-  destination: generateType(destination),
+  destination: {description: getDescription(tripDescriptions), name: generateType(cities), pictures:[ ...getPictures()]},
+  id: '0',
   isFavorite: false,
-  offer: { type: generateType(typePointsTrip), ...getSomeOffers()},
+  offers: getSomeOffers(),
+  type: generateType(typePointsTrip),
   idOffer: null,
   idDestination: [1],
 });

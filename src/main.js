@@ -43,7 +43,11 @@ for (let i = 0; i < POINT_COUNT; i++) {
 
 // Сгенерируем 8 точек маршрута
 
+
+const data = [];
 for (let j = 0; j < POINT_COUNT; j++) {
   const result = generate();
-  console.log(result);
+  data.push(result);
 }
+
+console.log(data);

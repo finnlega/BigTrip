@@ -9,7 +9,7 @@ import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';
 import { generate } from './mock/point';
 
-const POINT_COUNT = 8;
+const POINT_COUNT = 15;
 
 
 // Отрисовка элемента на странице
@@ -41,8 +41,7 @@ for (let i = 0; i < POINT_COUNT; i++) {
   render(listPoint, createPointTripTemplate());
 }
 
-// Сгенерируем 8 точек маршрута
-
+// Сгенерируем 15 точек маршрута
 
 const data = [];
 for (let j = 0; j < POINT_COUNT; j++) {

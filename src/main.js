@@ -11,6 +11,10 @@ import { generate } from './mock/point';
 
 const POINT_COUNT = 15;
 
+// Сгенерируем 15 точек маршрута
+
+const points = new Array(POINT_COUNT).fill().map(generate);
+console.log(points);
 
 // Отрисовка элемента на странице
 
@@ -38,11 +42,5 @@ render(tripEvents, createListPointTripTemplate());
 const listPoint = document.querySelector('.trip-events__list');
 
 for (let i = 0; i < POINT_COUNT; i++) {
-  render(listPoint, createPointTripTemplate());
+  render(listPoint, createPointTripTemplate(points[i]));
 }
-
-// Сгенерируем 15 точек маршрута
-
-const result = new Array(POINT_COUNT).fill().map(generate);
-console.log(result);
-

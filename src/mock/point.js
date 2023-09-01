@@ -77,35 +77,32 @@ const getPictures = () => {
   return data;
 };
 
-const getData = () => {
+const getDateBegin = () => {
 
-  // const maxDaysGap = 7;
-  // const daysGap = getRandomInteger(0, 3);
-  const date = dayjs().format('MMM-DD-HH-mm-ss');
+  const daysGap = getRandomInteger(0, 3);
+  const hoursGap = getRandomInteger(0, 24);
+  const minuteGap = getRandomInteger(0, 60);
+  const secondGap = getRandomInteger(0, 60);
+  const date = dayjs().add(daysGap, 'day').add(hoursGap, 'hour').add(minuteGap, 'minute').add(secondGap, 'second');
   return date;
 };
 
-const getDateEnd = () => {
+const getDateEnd = (date) => {
   const daysGap = getRandomInteger(0, 3);
   const hoursGap = getRandomInteger(0, 24);
-  const dateEnd = dayjs().add(daysGap, 'day').add(hoursGap, 'hour').format('MMM-DD-HH-mm-ss');
+  const minuteGap = getRandomInteger(0, 60);
+  const secondGap = getRandomInteger(0, 60);
+  const dateEnd = date.add(daysGap, 'day').add(hoursGap, 'hour').add(minuteGap, 'minute').add(secondGap, 'second');
   return dateEnd;
 };
 
-
-// const CompareData = (date) => {
-//   const month = date;
-//   console.log(month);
-// }
-
-// const dateFrom = getData();
-
 const generate = () => {
-  const dateBegin = getData();
+  const dateBegin = getDateBegin();
+  const dateEnd = getDateEnd(dateBegin);
   return ({
     basePrice: getRandomInteger(100, 500),
-    dateBegin,
-    dateEnd: getDateEnd(),
+    dateBegin: dateBegin.toDate(),
+    dateEnd: dateEnd.toDate(),
     destination: {description: getDescription(tripDescriptions), name: generateType(cities), pictures:[ ...getPictures()]},
     id: '0',
     isFavorite: Boolean(getRandomInteger(0, 1)),

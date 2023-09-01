@@ -43,10 +43,6 @@ for (let i = 0; i < POINT_COUNT; i++) {
 
 // Сгенерируем 15 точек маршрута
 
-const data = [];
-for (let j = 0; j < POINT_COUNT; j++) {
-  const result = generate();
-  data.push(result);
-}
+const result = new Array(POINT_COUNT).fill().map(generate);
+console.log(result);
 
-console.log(data);

@@ -9,7 +9,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const typePointsTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const cities = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
-const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast' ];
+const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station' ];
 const tripDescriptions = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -30,6 +30,14 @@ const generateType = (array) => {
   return array[randomIndex];
 };
 
+function getElementOfArray(array) {
+  debugger;
+  for (const element of array) {
+    return element;
+  }
+}
+
+
 // Структура данных offer
 
 const offers = {
@@ -48,6 +56,31 @@ const getSomeOffers = () => {
   }
   return data;
 };
+const createobj = () => {
+  const offer = {
+    type: getElementOfArray(typePointsTrip),
+    offers: [...getSomeOffers()],
+  };
+  return offer;
+};
+
+
+const createAllOffers = () => {
+  const items = new Array(10).fill().map(() => createobj());
+  return items;
+};
+
+
+const options = createAllOffers();
+console.log(options);
+
+
+// const offer = {
+//   type: generateType(typePointsTrip),
+//   offers: [...getSomeOffers()],
+// };
+
+// console.log(offer);
 
 // Часть структуры данных информация о месте назначения:
 
@@ -64,6 +97,7 @@ const getDescription = (array) => {
   }
   return data;
 };
+
 
 const getPictures = () => {
   // debugger;
@@ -99,17 +133,28 @@ const getDateEnd = (date) => {
 const generate = () => {
   const dateBegin = getDateBegin();
   const dateEnd = getDateEnd(dateBegin);
+  const type = generateType(typePointsTrip);
+
+  const CompareType = (array, key) => {
+    const matching = array.find((item) => item.type === key);
+    // if (!matching) {
+    //   console.log('matching not found');
+    // }
+    return matching;
+  };
+
+  // const matchingOffer =
   return ({
     basePrice: getRandomInteger(100, 500),
     dateBegin: dateBegin.toDate(),
     dateEnd: dateEnd.toDate(),
     destination: {description: getDescription(tripDescriptions), name: generateType(cities), pictures:[ ...getPictures()]},
-    id: '0',
+    id: 1,
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: getSomeOffers(),
-    type: generateType(typePointsTrip),
-    idOffer: null,
-    idDestination: [1],
+    offers: CompareType(options, type),
+    // type,
+    // idOffer: [1, 2, 3],
+    // idDestination: [1],
   });
 };
 

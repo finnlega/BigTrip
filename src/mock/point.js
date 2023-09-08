@@ -30,14 +30,6 @@ const generateType = (array) => {
   return array[randomIndex];
 };
 
-function getElementOfArray(array) {
-  debugger;
-  for (const element of array) {
-    return element;
-  }
-}
-
-
 // Структура данных offer
 
 const offers = {
@@ -45,8 +37,10 @@ const offers = {
   price: 'price',
 };
 
+// Сгенерируем дополнительные опции
+
 const getSomeOffers = () => {
-  // debugger;
+
   const data = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     data.push({
@@ -56,31 +50,32 @@ const getSomeOffers = () => {
   }
   return data;
 };
-const createobj = () => {
+
+// Копируем содержимое массива typePointTrip
+
+const DataCopy = (array) => {
+  const data = array.slice();
+  return data;
+};
+
+const CopyDataTypePointTrip = DataCopy(typePointsTrip);
+
+// Описываем содержимое объекта offer
+
+const createOffer = () => {
+  const type = CopyDataTypePointTrip.shift();
   const offer = {
-    type: getElementOfArray(typePointsTrip),
+    type,
     offers: [...getSomeOffers()],
   };
   return offer;
 };
 
+// создаем дополнительные опции по типу (type)
 
-const createAllOffers = () => {
-  const items = new Array(10).fill().map(() => createobj());
-  return items;
-};
-
+const createAllOffers = () => new Array(10).fill().map(() => createOffer());
 
 const options = createAllOffers();
-console.log(options);
-
-
-// const offer = {
-//   type: generateType(typePointsTrip),
-//   offers: [...getSomeOffers()],
-// };
-
-// console.log(offer);
 
 // Часть структуры данных информация о месте назначения:
 
@@ -131,9 +126,12 @@ const getDateEnd = (date) => {
 };
 
 const generate = () => {
+  // debugger;
   const dateBegin = getDateBegin();
   const dateEnd = getDateEnd(dateBegin);
   const type = generateType(typePointsTrip);
+
+  // Найдем в структуре offers опции по выбранному ключу type и вернем этот объект
 
   const CompareType = (array, key) => {
     const matching = array.find((item) => item.type === key);
@@ -143,7 +141,6 @@ const generate = () => {
     return matching;
   };
 
-  // const matchingOffer =
   return ({
     basePrice: getRandomInteger(100, 500),
     dateBegin: dateBegin.toDate(),
@@ -151,12 +148,11 @@ const generate = () => {
     destination: {description: getDescription(tripDescriptions), name: generateType(cities), pictures:[ ...getPictures()]},
     id: 1,
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: CompareType(options, type),
+    offer: CompareType(options, type),
     // type,
     // idOffer: [1, 2, 3],
     // idDestination: [1],
   });
 };
-
 
 export { generate };

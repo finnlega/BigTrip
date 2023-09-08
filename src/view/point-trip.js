@@ -1,13 +1,15 @@
 import dayjs from 'dayjs';
 
-const getElement = () => {
-  // const offers = array.map((element) =>
-  //   `<li class="event__offer">
-  //     <span class="event__offer-title">${element.title}</span>
-  //     &plus;&euro;&nbsp;
-  //     <span class="event__offer-price">${element.price}</span>
-  //   </li>`);
-  // return offers.join('');
+// Добавит опции в виде списка
+
+const getElement = (array) => {
+  const offers = array.map((element) =>
+    `<li class="event__offer">
+      <span class="event__offer-title">${element.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${element.price}</span>
+    </li>`);
+  return offers.join('');
 };
 
 const convertDate = (date) => {
@@ -57,7 +59,7 @@ const eventduration = (dateBegin, dateEnd) => {
 
 const createPointTripTemplate = (point) => {
   // debugger;
-  const { basePrice, destination, offers, dateBegin, dateEnd } = point;
+  const { basePrice, destination, offer, dateBegin, dateEnd } = point;
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -65,7 +67,7 @@ const createPointTripTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${offers.type} ${destination.name}</h3>
+        <h3 class="event__title">${offer.type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="2019-03-18T10:30">${convertDate(dateBegin)}</time>
@@ -79,7 +81,7 @@ const createPointTripTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${getElement(offers)}
+          ${getElement(offer.offers)}
         </ul>
         <button class="event__favorite-btn event__favorite-btn--active" type="button">
           <span class="visually-hidden">Add to favorite</span>

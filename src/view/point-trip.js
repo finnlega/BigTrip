@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+// var minMax = require('dayjs/plugin/minMax');
+// dayjs.extend(minMax);
 
 // Добавит опции в виде списка
 
@@ -59,11 +61,13 @@ const eventduration = (dateBegin, dateEnd) => {
 
 const createPointTripTemplate = (point) => {
   // debugger;
+
   const { basePrice, destination, offer, dateBegin, dateEnd } = point;
+
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${dayjs(dateEnd).format('MMM DD')}</time>
+        <time class="event__date" datetime="2019-03-18">${dayjs(dateBegin).format('MMM DD')}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>

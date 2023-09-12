@@ -16,6 +16,21 @@ const POINT_COUNT = 15;
 const points = new Array(POINT_COUNT).fill().map(generate);
 console.log(points);
 
+// Функция для сравнения дат
+function compareDates(a, b) {
+  return new Date(a.dateBegin) - new Date(b.dateBegin);
+}
+
+// Сортировка массива объектов по дате
+
+const sortedArray = () => {
+  const sortedDates = points.sort(compareDates);
+  console.log('Сортировка по возрастанию:', sortedDates);
+};
+
+sortedArray();
+
+
 // Отрисовка элемента на странице
 
 const render = (container, component, place ='beforeend') => {

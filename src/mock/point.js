@@ -108,7 +108,7 @@ const getPictures = () => {
 
 const getDateBegin = () => {
 
-  const daysGap = getRandomInteger(0, 3);
+  const daysGap = getRandomInteger(-2, 2);
   const hoursGap = getRandomInteger(0, 24);
   const minuteGap = getRandomInteger(0, 60);
   const secondGap = getRandomInteger(0, 60);
@@ -135,9 +135,6 @@ const generate = () => {
 
   const CompareType = (array, key) => {
     const matching = array.find((item) => item.type === key);
-    // if (!matching) {
-    //   console.log('matching not found');
-    // }
     return matching;
   };
 

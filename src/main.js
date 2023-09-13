@@ -50,12 +50,12 @@ render(tripInfo, createCostTemplate());
 render(tripControls, createMenuTemplate());
 render(tripFilters, createFilterTemplate());
 render(tripEvents, createSortingTemplate());
-render(tripEvents, editPointTripTemplate());
-render(tripEvents, createFormAddNewPointTemplate());
+render(tripEvents, editPointTripTemplate(points[0]));
+// render(tripEvents, createFormAddNewPointTemplate());
 render(tripEvents, createListPointTripTemplate());
 
 const listPoint = document.querySelector('.trip-events__list');
 
-for (let i = 0; i < POINT_COUNT; i++) {
+for (let i = 1; i < POINT_COUNT; i++) {
   render(listPoint, createPointTripTemplate(points[i]));
 }

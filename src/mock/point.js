@@ -35,6 +35,7 @@ const generateType = (array) => {
 const offers = {
   title: 'title',
   price: 'price',
+  isChecked : 'isChecked',
 };
 
 // Сгенерируем дополнительные опции
@@ -46,6 +47,7 @@ const getSomeOffers = () => {
     data.push({
       [offers.title] : generateType(titles),
       [offers.price] : getRandomInteger(1, 500),
+      [offers.isChecked]: Boolean(getRandomInteger(0, 1)),
     });
   }
   return data;
@@ -152,4 +154,4 @@ const generate = () => {
   });
 };
 
-export { generate };
+export { generate, getRandomInteger };

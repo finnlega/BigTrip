@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-// import { getRandomInteger } from '../mock/point';
+import { getRandomInteger } from '../mock/point';
 
 const createTypePointTemplate = () => {
 
@@ -21,24 +21,47 @@ const replaceString = (string) => {
   return string.slice(index + 1);
 };
 
-const createOfferPointTemplate = (data) =>
+const createOfferPointTemplate = (data) => {
+  console.log('offers', data);
+  return (
+    data.length !== 0 ? data.map((offer) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${getRandomInteger(0,1) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${replaceString(offer.title)}-1">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`).join('') : '');
+};
 
-  data.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${offer.isChecked ? 'checked' : ''}>
-    <label class="event__offer-label" for="event-offer-${replaceString(offer.title)}-1">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
-  </div>`).join('');
+const getPictures = (data) => {
+  console.log(data);
+  return (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${data.length !== 0 ? data.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.description}"></img>`).join('') : ''}
+      </div>
+    </div>`
+  );
+};
+
 
 const editPointTripTemplate = (point) => {
+  // const {
+  //   basePrice = null,
+  //   dateBegin = null,
+  //   dateEnd = null,
+  //   destination = '',
+  //   // id = 1,
+  //   // isFavorite = false,
+  //   offer = '',
+  // } = point;
 
   const { basePrice, destination, offer, dateBegin, dateEnd } = point;
-  createTypePointTemplate(offer.type);
+  // createTypePointTemplate(offer.type);
 
   return (
-    `<form class="event event--edit" action="#" method="post">
+    `<form class="event event--edit" id="edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -98,11 +121,14 @@ const editPointTripTemplate = (point) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
+          <p class="event__destination-description">${destination.description.join(' ')}</p>
+
+              ${destination !== '' ? getPictures(destination.pictures) : ''}
+
         </section>
       </section>
     </form>`
   );
 };
 
-export { editPointTripTemplate };
+export { editPointTripTemplate, createTypePointTemplate, createCitiesTemplate, createOfferPointTemplate, getPictures };

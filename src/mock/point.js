@@ -35,7 +35,6 @@ const generateType = (array) => {
 const offers = {
   title: 'title',
   price: 'price',
-  isChecked : 'isChecked',
 };
 
 // Сгенерируем дополнительные опции
@@ -47,7 +46,6 @@ const getSomeOffers = () => {
     data.push({
       [offers.title] : generateType(titles),
       [offers.price] : getRandomInteger(1, 500),
-      [offers.isChecked]: Boolean(getRandomInteger(0, 1)),
     });
   }
   return data;
@@ -101,7 +99,7 @@ const getPictures = () => {
   const data = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     data.push({
-      [pictures.src] : `http://picsum.photos/248/152?r=${getRandomInteger(1, 100)}`,
+      [pictures.src] : `http://picsum.photos/248/152?r=${getRandomInteger(1, 5000)}`,
       [pictures.description] : tripDescriptions[getRandomInteger(0, 10)],
     });
   }
@@ -110,7 +108,7 @@ const getPictures = () => {
 
 const getDateBegin = () => {
 
-  const daysGap = getRandomInteger(-2, 2);
+  const daysGap = getRandomInteger(-4, 4);
   const hoursGap = getRandomInteger(0, 24);
   const minuteGap = getRandomInteger(0, 60);
   const secondGap = getRandomInteger(0, 60);

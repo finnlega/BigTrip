@@ -1,3 +1,20 @@
+const PointToFilterMap = {
+  Everything : (tasks) => tasks.length,
+  // Future : (tasks) => tasks
+  //   .filter((task) => !task.isArchive)
+  //   .filter((task) => isTaskExpired(task.dueDate)).length,
+  // Past : (tasks) => tasks
+  //   .filter((task) => !task.isArchive)
+  //   .filter((task) => isTaskExpiringToday(task.dueDate)).length,
+  // favorites: (tasks) => tasks
+  //   .filter((task) => !task.isArchive)
+  //   .filter((task) => task.isFavorite).length,
+  // repeating: (tasks) => tasks
+  //   .filter((task) => !task.isArchive)
+  //   .filter((task) => isTaskRepeating(task.repeating)).length,
+  // archive: (tasks) => tasks.filter((task) => task.isArchive).length,
+};
+
 const createFilterTemplate = () =>
   `<form class="trip-filters" action="#" method="get">
     <div class="trip-filters__filter">

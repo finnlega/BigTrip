@@ -1,13 +1,8 @@
 import dayjs from 'dayjs';
+import { getRandomInteger, dataCopy, generateType } from '../view/utils';
+import { TYPE_POINT_TRIP } from '../view/const';
 
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
 
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const typePointsTrip = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const cities = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
 const titles = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station' ];
 const tripDescriptions = [
@@ -22,13 +17,6 @@ const tripDescriptions = [
   'Aliquam erat volutpat.',
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.' ];
-
-const generateType = (array) => {
-
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return array[randomIndex];
-};
 
 // Структура данных offer
 
@@ -53,12 +41,7 @@ const getSomeOffers = () => {
 
 // Копируем содержимое массива typePointTrip
 
-const DataCopy = (array) => {
-  const data = array.slice();
-  return data;
-};
-
-const CopyDataTypePointTrip = DataCopy(typePointsTrip);
+const CopyDataTypePointTrip = dataCopy(TYPE_POINT_TRIP);
 
 // Описываем содержимое объекта offer
 
@@ -85,7 +68,6 @@ const pictures = {
 };
 
 const getDescription = (array) => {
-  // debugger;
   const data = [];
   for (let i = 0; i < getRandomInteger(1, 5); i++) {
     data.push(array[i]);
@@ -93,9 +75,9 @@ const getDescription = (array) => {
   return data;
 };
 
+//Получит картинки с описанием
 
 const getPictures = () => {
-  // debugger;
   const data = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     data.push({
@@ -107,7 +89,6 @@ const getPictures = () => {
 };
 
 const getDateBegin = () => {
-
   const daysGap = getRandomInteger(-4, 4);
   const hoursGap = getRandomInteger(0, 24);
   const minuteGap = getRandomInteger(0, 60);
@@ -125,11 +106,11 @@ const getDateEnd = (date) => {
   return dateEnd;
 };
 
-const generate = () => {
+const generatePoint = () => {
   // debugger;
   const dateBegin = getDateBegin();
   const dateEnd = getDateEnd(dateBegin);
-  const type = generateType(typePointsTrip);
+  const type = generateType(TYPE_POINT_TRIP);
 
   // Найдем в структуре offers опции по выбранному ключу type и вернем этот объект
 
@@ -152,4 +133,4 @@ const generate = () => {
   });
 };
 
-export { generate, getRandomInteger };
+export { generatePoint };

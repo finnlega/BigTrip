@@ -1,24 +1,17 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../mock/point';
+import { getRandomInteger, replaceString } from './utils';
+import { TYPE_POINT_TRIP } from './const';
 
-const createTypePointTemplate = () => {
+const createTypePointTemplate = () =>
 
-  const types = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
-  return types.map((type) => `<div class="event__type-item">
+  TYPE_POINT_TRIP.map((type) => `<div class="event__type-item">
       <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
     </div>`).join('');
-};
 
 const createCitiesTemplate = () => {
   const cities = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
   return cities.map((city) => `<option value="${city}"></option>`).join('');
-};
-
-const replaceString = (string) => {
-  const index = string.lastIndexOf(' ');
-  return string.slice(index + 1);
 };
 
 const createOfferPointTemplate = (data) => {
@@ -47,18 +40,8 @@ const getPictures = (data) => {
 
 
 const editPointTripTemplate = (point) => {
-  // const {
-  //   basePrice = null,
-  //   dateBegin = null,
-  //   dateEnd = null,
-  //   destination = '',
-  //   // id = 1,
-  //   // isFavorite = false,
-  //   offer = '',
-  // } = point;
 
   const { basePrice, destination, offer, dateBegin, dateEnd } = point;
-  // createTypePointTemplate(offer.type);
 
   return (
     `<form class="event event--edit" id="edit" action="#" method="post">

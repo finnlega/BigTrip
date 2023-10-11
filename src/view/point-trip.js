@@ -1,17 +1,18 @@
 import dayjs from 'dayjs';
 import { convertDate, eventduration } from './utils';
+import { getElement } from './offer';
 
 // Добавит опции в виде списка
 
-const getElement = (array) => {
-  const offers = array.map((element) =>
-    `<li class="event__offer">
-      <span class="event__offer-title">${element.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${element.price}</span>
-    </li>`);
-  return offers.join('');
-};
+// const getElement = (array) => {
+//   const offers = array.map((element) =>
+//     `<li class="event__offer">
+//       <span class="event__offer-title">${element.title}</span>
+//       &plus;&euro;&nbsp;
+//       <span class="event__offer-price">${element.price}</span>
+//     </li>`);
+//   return offers.join('');
+// };
 
 // const convertDate = (date) => {
 //   const timeFromDate = dayjs(date).format('HH:mm');
@@ -79,7 +80,7 @@ const createPointTripTemplate = (point) => {
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${dayjs(dateBegin).format('MMM DD')}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${offer.type} ${destination.name}</h3>
         <div class="event__schedule">

@@ -9,7 +9,8 @@ import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
-// import dayjs from 'dayjs';
+import { compareDates } from './view/utils';
+import { countTheTotalAmount } from './view/cost';
 
 const POINT_COUNT = 15;
 
@@ -21,17 +22,13 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const filters = generateFilter(points);
 // console.log(filters);
 
-// Функция для сравнения дат
-function compareDates(a, b) {
-  return new Date(a.dateBegin) - new Date(b.dateBegin);
-}
-
 // Сортировка массива объектов по дате
 
 const sortedArray = () => points.sort(compareDates);
-// console.log('Сортировка по возрастанию:', sortedDates);
 
 sortedArray();
+
+const costPoints = countTheTotalAmount(points);
 
 // Отрисовка элемента на странице
 
@@ -48,7 +45,7 @@ render(tripMain, createTripInfoTemplate(), 'afterbegin');
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
-render(tripInfo, createCostTemplate());
+render(tripInfo, createCostTemplate(costPoints));
 render(tripControls, createMenuTemplate());
 render(tripFilters, createFilterTemplate(filters));
 render(tripEvents, createSortingTemplate());
@@ -58,6 +55,11 @@ render(tripEvents, editPointTripTemplate(points[0]));
 render(tripEvents, createListPointTripTemplate());
 
 const listPoint = document.querySelector('.trip-events__list');
+
+// отрисует все элементы
+// points.forEach((element, index) => {
+//   render(listPoint, createPointTripTemplate(element, index === 1));
+// });
 
 for (let i = 1; i < POINT_COUNT; i++) {
   render(listPoint, createPointTripTemplate(points[i]));

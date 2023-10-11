@@ -72,17 +72,46 @@ export const eventduration = (dateBegin, dateEnd) => {
   }
 };
 
-// Выберет даты старше текущей
+// Выберет даты, которые находятся в прошлом периоде до текущей даты
 
-export const IsDateInPast = (date) => dayjs().isAfter(date);
+export const isDateInPast = (date) => dayjs().isAfter(date);
 
-// Выберет даты младше текущей
+// Выберет даты, которые запланированы на будущий период.
 
-export const IsDateInFeature = (date) => dayjs().isBefore(date);
+export const isDateInFuture = (date) => dayjs().isBefore(date);
 
 // Работа со строкой
 
 export const replaceString = (string) => {
   const index = string.lastIndexOf(' ');
   return string.slice(index + 1);
+};
+
+// Функция для сравнения дат
+export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBegin);
+
+
+// Найдем по ключу обьект
+
+export const сompareType = (array, key) => {
+  const matching = array.find((item) => item.type === key);
+  return matching;
+};
+
+export const getDateBegin = () => {
+  const daysGap = getRandomInteger(-4, 4);
+  const hoursGap = getRandomInteger(0, 24);
+  const minuteGap = getRandomInteger(0, 60);
+  const secondGap = getRandomInteger(0, 60);
+  const date = dayjs().add(daysGap, 'day').add(hoursGap, 'hour').add(minuteGap, 'minute').add(secondGap, 'second');
+  return date;
+};
+
+export const getDateEnd = (date) => {
+  const daysGap = getRandomInteger(0, 3);
+  const hoursGap = getRandomInteger(0, 24);
+  const minuteGap = getRandomInteger(0, 60);
+  const secondGap = getRandomInteger(0, 60);
+  const dateEnd = date.add(daysGap, 'day').add(hoursGap, 'hour').add(minuteGap, 'minute').add(secondGap, 'second');
+  return dateEnd;
 };

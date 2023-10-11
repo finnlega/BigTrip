@@ -14,29 +14,22 @@ const createCitiesTemplate = () => {
   return cities.map((city) => `<option value="${city}"></option>`).join('');
 };
 
-const createOfferPointTemplate = (data) => {
-  console.log('offers', data);
-  return (
-    data.length !== 0 ? data.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${getRandomInteger(0,1) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${replaceString(offer.title)}-1">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`).join('') : '');
-};
+const createOfferPointTemplate = (data) =>
+  data.length !== 0 ? data.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${getRandomInteger(0,1) ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${replaceString(offer.title)}-1">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`).join('') : '';
 
-const getPictures = (data) => {
-  console.log(data);
-  return (
-    `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${data.length !== 0 ? data.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.description}"></img>`).join('') : ''}
-      </div>
-    </div>`
-  );
-};
+const getPictures = (data) =>
+  `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${data.length !== 0 ? data.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.description}"></img>`).join('') : ''}
+    </div>
+  </div>`;
 
 
 const editPointTripTemplate = (point) => {
@@ -49,7 +42,7 @@ const editPointTripTemplate = (point) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 

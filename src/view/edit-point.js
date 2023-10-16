@@ -10,7 +10,7 @@ const createTypePointTemplate = () =>
     </div>`).join('');
 
 const createCitiesTemplate = () => {
-  const cities = [ 'Amsterdam', 'Chamonix', 'Geneva' ];
+  const cities = [ 'Amsterdam', 'Chamonix', 'Geneva', 'Tokyo', 'Lisbon' ];
   return cities.map((city) => `<option value="${city}"></option>`).join('');
 };
 
@@ -24,17 +24,24 @@ const createOfferPointTemplate = (data) =>
     </label>
   </div>`).join('') : '';
 
-const getPictures = (data) =>
-  `<div class="event__photos-container">
+const getPictures = (data) => {
+  const className = data.length < 5 ? ' ' : 'event__photos-container';
+  return ( `<div class="${className}">
     <div class="event__photos-tape">
       ${data.length !== 0 ? data.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.description}"></img>`).join('') : ''}
     </div>
-  </div>`;
+  </div>`);
+};
 
 
-const editPointTripTemplate = (point) => {
-
-  const { basePrice, destination, offer, dateBegin, dateEnd } = point;
+const editPointTripTemplate = (point = {}) => {
+  const {
+    basePrice = null,
+    dateBegin = dayjs(),
+    dateEnd = null,
+    destination = '',
+    offer = '',
+  } = point;
 
   return (
     `<form class="event event--edit" id="edit" action="#" method="post">
@@ -77,27 +84,27 @@ const editPointTripTemplate = (point) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice !== null ? basePrice : ''}">
         </div>
-
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+          ${point === undefined ? `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>` : `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>`}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOfferPointTemplate(offer.offers)}
+            ${offer !== '' ? createOfferPointTemplate(offer.offers) : ''}
           </div>
         </section>
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description.join(' ')}</p>
+          <p class="event__destination-description">${destination !== '' ? destination.description.join() : ''}</p>
 
               ${destination !== '' ? getPictures(destination.pictures) : ''}
 

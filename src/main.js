@@ -11,13 +11,14 @@ import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
 import { compareDates } from './view/utils';
 import { countTheTotalAmount } from './view/cost';
+import { getTripInfo, getDatesTrip } from './view/trip-info';
 
 const POINT_COUNT = 15;
 
 // Сгенерируем 15 точек маршрута
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
-// console.log(points);
+console.log(points);
 
 const filters = generateFilter(points);
 // console.log(filters);
@@ -29,6 +30,8 @@ const sortedArray = () => points.sort(compareDates);
 sortedArray();
 
 const costPoints = countTheTotalAmount(points);
+const infoAboutTrip = getTripInfo(points);
+const infoAboutDateTrip = getDatesTrip(points);
 
 // Отрисовка элемента на странице
 
@@ -41,7 +44,7 @@ const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
-render(tripMain, createTripInfoTemplate(), 'afterbegin');
+render(tripMain, createTripInfoTemplate(infoAboutTrip, infoAboutDateTrip), 'afterbegin');
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
@@ -79,7 +82,7 @@ const addNewPoint = () => {
   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
   buttonAddNewpoint.addEventListener('click', ()=> {
     removeElement();
-    render(listPoint, createFormAddNewPointTemplate(), 'afterbegin');
+    render(listPoint, editPointTripTemplate(), 'afterbegin');
     for (let i = 0; i < POINT_COUNT; i++) {
       render(listPoint, createPointTripTemplate(points[i]));
     }

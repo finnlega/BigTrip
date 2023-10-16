@@ -3,7 +3,7 @@ import { createTripInfoTemplate } from './view/trip-info';
 import { createCostTemplate } from './view/cost';
 import { createFilterTemplate } from './view/filters';
 import { createSortingTemplate } from './view/sorting';
-import { createFormAddNewPointTemplate } from './view/add-new-point';
+// import { createFormAddNewPointTemplate } from './view/add-new-point';
 import { editPointTripTemplate } from './view/edit-point';
 import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';

@@ -20,11 +20,13 @@ const offers = {
 const getSomeOffers = () => {
 
   const data = [];
+
   for (let i = 0; i < getRandomInteger(OFFER_MIN, OFFER_MAX); i++) {
     data.push({
       [offers.title] : generateType(TITLES),
       [offers.price] : getRandomInteger(PRICE_MIN_VALUE_OFFER, PRICE_MAX_VALUE_OFFER),
     });
+    console.log(data);
   }
   return data;
 };
@@ -39,8 +41,9 @@ const createOffer = () => {
   const type = CopyDataTypePointTrip.shift();
   const offer = {
     type,
-    offers: [...getSomeOffers()],
+    offers:  [...getSomeOffers()],
   };
+  // console.log(offer);
   return offer;
 };
 
@@ -49,3 +52,4 @@ const createOffer = () => {
 const createAllOffers = () => new Array(OFFER_COUNT).fill().map(() => createOffer());
 
 export const options = createAllOffers();
+

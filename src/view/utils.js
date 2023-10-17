@@ -16,6 +16,18 @@ export const generateType = (array) => {
   return array[randomIndex];
 };
 
+export const getElements = (array) => {
+  console.log('arraCOpy', array);
+  for (let i = 0; i < array.length-1; i++){
+    const index = i + 1;
+    const newArr = [];
+    newArr.push(array[index]);
+    // arrayCopy[index].shift();
+  }
+  const randomIndex = getRandomInteger(0, array.length - 1);
+  return array[randomIndex];
+};
+
 // Копирует массив
 
 export const dataCopy = (array) => {

@@ -3,7 +3,6 @@ import { createTripInfoTemplate } from './view/trip-info';
 import { createCostTemplate } from './view/cost';
 import { createFilterTemplate } from './view/filters';
 import { createSortingTemplate } from './view/sorting';
-// import { createFormAddNewPointTemplate } from './view/add-new-point';
 import { editPointTripTemplate } from './view/edit-point';
 import { createListPointTripTemplate } from './view/list-point-trip';
 import { createPointTripTemplate } from './view/point-trip';
@@ -18,16 +17,16 @@ const POINT_COUNT = 15;
 // Сгенерируем 15 точек маршрута
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
-console.log(points);
+// console.log(points);
 
 const filters = generateFilter(points);
 // console.log(filters);
 
 // Сортировка массива объектов по дате
 
-// const sortedArray = () => points.sort(compareDates);
+const sortedArray = () => points.sort(compareDates);
 
-// sortedArray();
+sortedArray();
 
 const costPoints = countTheTotalAmount(points);
 const infoAboutTrip = getTripInfo(points);
@@ -90,5 +89,4 @@ const addNewPoint = () => {
 };
 
 addNewPoint();
-//
 

@@ -48,4 +48,3 @@ const createPointTripTemplate = (point) => {
 };
 
 export { createPointTripTemplate };
-//

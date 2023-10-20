@@ -115,4 +115,4 @@ const editPointTripTemplate = (point = {}) => {
   );
 };
 
-export { editPointTripTemplate, createTypePointTemplate, createCitiesTemplate, createOfferPointTemplate, getPictures };
+export { editPointTripTemplate };

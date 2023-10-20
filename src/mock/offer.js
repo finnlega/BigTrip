@@ -1,5 +1,5 @@
 // import dayjs from 'dayjs';
-import { getRandomInteger, dataCopy, generateType } from '../view/utils';
+import { getRandomInteger, dataCopy, shuffleArray } from '../view/utils';
 import { TYPE_POINT_TRIP, TITLES } from '../view/const';
 
 const OFFER_COUNT = 10;
@@ -18,15 +18,20 @@ const offers = {
 // Сгенерируем дополнительные опции
 
 const getSomeOffers = () => {
-
+  const uniqueTitles = new Set();
   const data = [];
+  const indexValue = getRandomInteger(OFFER_MIN, OFFER_MAX);
+  for (let i = 0; i < indexValue; i++) {
+    let title = shuffleArray(TITLES);
 
-  for (let i = 0; i < getRandomInteger(OFFER_MIN, OFFER_MAX); i++) {
+    while (uniqueTitles.has(title)) {
+      title = shuffleArray(TITLES);
+    }
+    uniqueTitles.add(title);
     data.push({
-      [offers.title] : generateType(TITLES),
+      [offers.title] : title,
       [offers.price] : getRandomInteger(PRICE_MIN_VALUE_OFFER, PRICE_MAX_VALUE_OFFER),
     });
-    console.log(data);
   }
   return data;
 };
@@ -43,7 +48,6 @@ const createOffer = () => {
     type,
     offers:  [...getSomeOffers()],
   };
-  // console.log(offer);
   return offer;
 };
 

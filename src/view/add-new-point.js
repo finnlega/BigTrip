@@ -8,8 +8,6 @@ const createFormAddNewPointTemplate = (point= {}) => {
     dateBegin = null,
     dateEnd = null,
     destination = '',
-    // id = 1,
-    // isFavorite = false,
     offer = '',
   } = point;
 

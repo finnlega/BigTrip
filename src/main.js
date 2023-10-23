@@ -59,8 +59,8 @@ render(tripEvents, createListPointTripTemplate());
 const listPoint = document.querySelector('.trip-events__list');
 
 // отрисует все элементы
-// points.forEach((element, index) => {
-//   render(listPoint, createPointTripTemplate(element, index === 1));
+// points.forEach((element) => {
+//   render(listPoint, createPointTripTemplate(element));
 // });
 
 for (let i = 1; i < POINT_COUNT; i++) {

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { createElement } from './utils';
 
 export const getTripInfo = (array) => {
   for (let i = 0; i < array.length-1; i++) {
@@ -24,4 +25,28 @@ const createTripInfoTemplate = (info, dates) =>
     </div>
   </section>`;
 
-export { createTripInfoTemplate };
+// export { createTripInfoTemplate };
+
+export default class TripInfo {
+  constructor (infoAboutTrip, dates) {
+    this._element = null;
+    this._infoAboutTrip = infoAboutTrip;
+    this._dates = dates;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._infoAboutTrip, this._dates);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

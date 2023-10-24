@@ -1,5 +1,35 @@
 import dayjs from 'dayjs';
 
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+export const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+// Отрисовка элемента на странице
+
+export const renderTemplate = (container, component, place ='beforeend') => {
+  container.insertAdjacentHTML(place, component);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Вернет случайное число
 
 export const getRandomInteger = (a = 0, b = 1) => {

@@ -1,3 +1,4 @@
+import { createElement } from './utils';
 
 const filterPointsOnEmptyOffers = (data) => {
   const result = data.filter((element) => element.offer.offers.length !== 0);
@@ -24,7 +25,29 @@ export const countTheTotalAmount = (array) => {
   return totalSum;
 };
 
-export const createCostTemplate = (cost) => `<p class="trip-info__cost">
+const createCostTemplate = (cost) => `<p class="trip-info__cost">
     Total: &euro;&nbsp;<span class="trip-info__cost-value">${cost}</span>
     </p>`;
+
+export default class Cost {
+  constructor(cost) {
+    this._element = null;
+    this._cost = cost;
+  }
+
+  getTemplate() {
+    return createCostTemplate(this._cost);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

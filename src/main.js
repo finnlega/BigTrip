@@ -12,7 +12,7 @@ import { generateFilter } from './mock/filter';
 import { compareDates } from './view/utils';
 import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
-import { renderElement, RenderPosition } from './view/utils';
+import { render, RenderPosition } from './view/utils';
 
 const POINT_COUNT = 15;
 
@@ -41,33 +41,33 @@ const tripEvents = document.querySelector('.trip-events');
 
 // Рендерит информацию о маршруте и датах
 
-renderElement(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
+render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
 // рендерит общую стоимость
 
-renderElement(tripInfo, new CostView(costPoints).getElement(), RenderPosition.BEFOREEND);
+render(tripInfo, new CostView(costPoints).getElement(), RenderPosition.BEFOREEND);
 
 // Рендерит меню
 
-renderElement(tripControls, new MenuView().getElement(), RenderPosition.BEFOREEND);
+render(tripControls, new MenuView().getElement(), RenderPosition.BEFOREEND);
 
 // Рендерит фильтры
 
-renderElement(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
+render(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
 
 // Рендерит cортировку
 
-renderElement(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
 // Рендерит карточку на редактирование
 
-renderElement(tripEvents, new PointTripEditView(points[0]).getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new PointTripEditView(points[0]).getElement(), RenderPosition.BEFOREEND);
 
 // Рендерит контейнер для points
 
-renderElement(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
 
 const listPoint = document.querySelector('.trip-events__list');
 
@@ -77,7 +77,7 @@ const listPoint = document.querySelector('.trip-events__list');
 // });
 
 for (let i = 1; i < POINT_COUNT; i++) {
-  renderElement(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
+  render(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 const removeElement = () => {
@@ -94,9 +94,9 @@ const addNewPoint = () => {
   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
   buttonAddNewpoint.addEventListener('click', ()=> {
     removeElement();
-    renderElement(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
+    render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
     for (let i = 0; i < POINT_COUNT; i++) {
-      renderElement(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
+      render(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
     }
   });
 };

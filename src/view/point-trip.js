@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { convertDate, eventduration } from './utils';
+import { convertDate, eventduration, createElement } from './utils';
 import { getElement } from './offer';
 
 const createPointTripTemplate = (point) => {
@@ -47,4 +47,25 @@ const createPointTripTemplate = (point) => {
   );
 };
 
-export { createPointTripTemplate };
+export default class PointTrip {
+
+  constructor (point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate () {
+    return createPointTripTemplate(this._point);
+  }
+
+  getElement () {
+    if(!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}

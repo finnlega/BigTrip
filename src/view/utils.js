@@ -82,15 +82,18 @@ export const eventduration = (dateBegin, dateEnd) => {
   const endDate = dayjs(dateEnd);
 
   // Рассчитываем разницу в минутах между датами
+
   const minutesDiff = endDate.diff(startDate, 'minute');
 
   // Разбиваем разницу на дни, часы и минуты
+
   const days = Math.floor(minutesDiff / 1440);
   const remainingMinutes = minutesDiff % 1440;
   const hours = Math.floor(remainingMinutes / 60);
   const minutes = remainingMinutes % 60;
 
   // Форматируем результат в зависимости от условий
+
   if (days === 0) {
     if (hours === 0) {
       if (minutes < 10) {
@@ -131,6 +134,7 @@ export const replaceString = (string) => {
 };
 
 // Функция для сравнения дат
+
 export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBegin);
 
 

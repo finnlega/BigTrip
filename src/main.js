@@ -4,19 +4,15 @@ import SortingView from './view/sorting';
 import ListPointsView from './view/list-point-trip';
 import TripInfoView from './view/trip-info';
 import CostView from './view/cost';
-// import { createTripInfoTemplate } from './view/trip-info';
-// import { createCostTemplate } from './view/cost';
-import { createFilterTemplate } from './view/filters';
-// import { createSortingTemplate } from './view/sorting';
-import { editPointTripTemplate } from './view/edit-point';
-// import { createListPointTripTemplate } from './view/list-point-trip';
-import { createPointTripTemplate } from './view/point-trip';
+import FilterView from './view/filters';
+import PointTripView from './view/point-trip';
+import PointTripEditView from './view/edit-point';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
 import { compareDates } from './view/utils';
 import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
-import { renderTemplate, renderElement, RenderPosition } from './view/utils';
+import { renderElement, RenderPosition } from './view/utils';
 
 const POINT_COUNT = 15;
 
@@ -43,29 +39,33 @@ const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
-// Рендерим информацию о маршруте и датах
+// Рендерит информацию о маршруте и датах
 
 renderElement(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
-// рендерим общую стоимость
+// рендерит общую стоимость
 
 renderElement(tripInfo, new CostView(costPoints).getElement(), RenderPosition.BEFOREEND);
 
-// Рендерим меню
+// Рендерит меню
 
 renderElement(tripControls, new MenuView().getElement(), RenderPosition.BEFOREEND);
 
-renderTemplate(tripFilters, createFilterTemplate(filters));
+// Рендерит фильтры
 
-// Рендерим cортировку
+renderElement(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
+
+// Рендерит cортировку
 
 renderElement(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
-renderTemplate(tripEvents, editPointTripTemplate(points[0]));
+// Рендерит карточку на редактирование
 
-// Рендерим контейнер для points
+renderElement(tripEvents, new PointTripEditView(points[0]).getElement(), RenderPosition.BEFOREEND);
+
+// Рендерит контейнер для points
 
 renderElement(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
 
@@ -77,7 +77,7 @@ const listPoint = document.querySelector('.trip-events__list');
 // });
 
 for (let i = 1; i < POINT_COUNT; i++) {
-  renderTemplate(listPoint, createPointTripTemplate(points[i]));
+  renderElement(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 const removeElement = () => {
@@ -94,9 +94,9 @@ const addNewPoint = () => {
   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
   buttonAddNewpoint.addEventListener('click', ()=> {
     removeElement();
-    renderTemplate(listPoint, editPointTripTemplate(), 'afterbegin');
+    renderElement(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
     for (let i = 0; i < POINT_COUNT; i++) {
-      renderTemplate(listPoint, createPointTripTemplate(points[i]));
+      renderElement(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
     }
   });
 };

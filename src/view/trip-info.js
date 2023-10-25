@@ -25,8 +25,6 @@ const createTripInfoTemplate = (info, dates) =>
     </div>
   </section>`;
 
-// export { createTripInfoTemplate };
-
 export default class TripInfo {
   constructor (infoAboutTrip, dates) {
     this._element = null;

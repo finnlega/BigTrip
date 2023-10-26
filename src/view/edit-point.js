@@ -1,6 +1,14 @@
 import dayjs from 'dayjs';
-import { getRandomInteger, replaceString } from './utils';
+import { getRandomInteger, replaceString, createElement } from './utils';
 import { TYPE_POINT_TRIP } from './const';
+
+const BLANK_POINT = {
+  basePrice : null,
+  dateBegin : dayjs(),
+  dateEnd : null,
+  destination : '',
+  offer : '',
+};
 
 const createTypePointTemplate = () =>
 
@@ -33,15 +41,8 @@ const getPictures = (data) => {
   </div>`);
 };
 
-
-const editPointTripTemplate = (point = {}) => {
-  const {
-    basePrice = null,
-    dateBegin = dayjs(),
-    dateEnd = null,
-    destination = '',
-    offer = '',
-  } = point;
+const editPointTripTemplate = (point) => {
+  const { basePrice, destination, offer, dateBegin, dateEnd } = point;
 
   return (
     `<form class="event event--edit" id="edit" action="#" method="post">
@@ -115,4 +116,26 @@ const editPointTripTemplate = (point = {}) => {
   );
 };
 
-export { editPointTripTemplate };
+export default class PointTripEdit {
+
+  constructor (point = BLANK_POINT) {
+    this._element = null;
+
+    this._point = point;
+  }
+
+  getTemplate () {
+    return editPointTripTemplate(this._point);
+  }
+
+  getElement () {
+    if(!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}

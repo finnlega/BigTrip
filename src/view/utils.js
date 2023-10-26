@@ -1,5 +1,29 @@
 import dayjs from 'dayjs';
 
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Вернет случайное число
 
 export const getRandomInteger = (a = 0, b = 1) => {
@@ -52,15 +76,18 @@ export const eventduration = (dateBegin, dateEnd) => {
   const endDate = dayjs(dateEnd);
 
   // Рассчитываем разницу в минутах между датами
+
   const minutesDiff = endDate.diff(startDate, 'minute');
 
   // Разбиваем разницу на дни, часы и минуты
+
   const days = Math.floor(minutesDiff / 1440);
   const remainingMinutes = minutesDiff % 1440;
   const hours = Math.floor(remainingMinutes / 60);
   const minutes = remainingMinutes % 60;
 
   // Форматируем результат в зависимости от условий
+
   if (days === 0) {
     if (hours === 0) {
       if (minutes < 10) {
@@ -101,6 +128,7 @@ export const replaceString = (string) => {
 };
 
 // Функция для сравнения дат
+
 export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBegin);
 
 

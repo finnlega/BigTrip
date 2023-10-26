@@ -39,6 +39,31 @@ const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
+const renderPoint = (pointListElement, point) => {
+  const pointCompanent = new PointTripView(point);
+  const pointEditComponent = new PointTripEditView(point);
+
+  const replaceCardToForm = () => {
+    pointListElement.replaceChild(pointEditComponent.getElement(), pointCompanent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    pointListElement.replaceChild(pointCompanent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointCompanent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+  });
+
+  pointEditComponent.getElement().addEventListener('submit', (evt) => {
+
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(pointListElement, pointCompanent.getElement(), RenderPosition.BEFOREEND);
+};
+
 // Рендерит информацию о маршруте и датах
 
 render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
@@ -61,10 +86,6 @@ render(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREE
 
 render(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
-// Рендерит карточку на редактирование
-
-render(tripEvents, new PointTripEditView(points[0]).getElement(), RenderPosition.BEFOREEND);
-
 // Рендерит контейнер для points
 
 render(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
@@ -76,8 +97,9 @@ const listPoint = document.querySelector('.trip-events__list');
 //   render(listPoint, createPointTripTemplate(element));
 // });
 
-for (let i = 1; i < POINT_COUNT; i++) {
-  render(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
+
+for (let i = 0; i < POINT_COUNT; i++) {
+  renderPoint(listPoint, points[i]);
 }
 
 const removeElement = () => {
@@ -96,7 +118,7 @@ const addNewPoint = () => {
     removeElement();
     render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
     for (let i = 0; i < POINT_COUNT; i++) {
-      render(listPoint, new PointTripView(points[i]).getElement(), RenderPosition.BEFOREEND);
+      renderPoint(listPoint, points[i]);
     }
   });
 };

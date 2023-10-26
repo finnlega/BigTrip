@@ -1,6 +1,6 @@
 // Список офферов
 
-export const getElement = (array) => {
+export const getOffer = (array) => {
   const offers = array.map((element) =>
     `<li class="event__offer">
       <span class="event__offer-title">${element.title}</span>
@@ -9,3 +9,4 @@ export const getElement = (array) => {
     </li>`);
   return offers.join('');
 };
+

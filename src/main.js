@@ -55,7 +55,7 @@ const renderPoint = (pointListElement, point) => {
     replaceCardToForm();
   });
 
-  pointEditComponent.getElement().addEventListener('submit', (evt) => {
+  pointEditComponent.getElement().querySelector('#edit').addEventListener('submit', (evt) => {
 
     evt.preventDefault();
     replaceFormToCard();
@@ -102,26 +102,28 @@ for (let i = 0; i < POINT_COUNT; i++) {
   renderPoint(listPoint, points[i]);
 }
 
-const removeElement = () => {
-  const data = document.querySelectorAll('.trip-events__item');
-  const tripEditForm = document.querySelector('.event');
-  tripEditForm.remove();
-  for (let i = 0; i <= data.length-1; i++) {
-    data[i].remove();
-  }
-};
+// Закомментировал для проверки на значения по умолчанию при создания новой карточки
 
-const addNewPoint = () => {
+// const removeElement = () => {
+//   const data = document.querySelectorAll('.trip-events__item');
+//   const tripEditForm = document.querySelector('.event');
+//   tripEditForm.remove();
+//   for (let i = 0; i <= data.length-1; i++) {
+//     data[i].remove();
+//   }
+// };
 
-  const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
-  buttonAddNewpoint.addEventListener('click', ()=> {
-    removeElement();
-    render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
-    for (let i = 0; i < POINT_COUNT; i++) {
-      renderPoint(listPoint, points[i]);
-    }
-  });
-};
+// const addNewPoint = () => {
 
-addNewPoint();
+//   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
+//   buttonAddNewpoint.addEventListener('click', ()=> {
+//     removeElement();
+//     render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
+//     for (let i = 0; i < POINT_COUNT; i++) {
+//       renderPoint(listPoint, points[i]);
+//     }
+//   });
+// };
+
+// addNewPoint();
 

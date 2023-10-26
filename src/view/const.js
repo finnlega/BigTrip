@@ -1,5 +1,5 @@
 export const TYPE_POINT_TRIP = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-export const TITLES = ['Choose meal', 'Upgrade to comfort class', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station', 'guide services', 'rest in spa',
+export const TITLES = ['Choose meal', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station', 'guide services', 'rest in spa',
   'special rates' ];
 export const TRIP_DESCRIPTION = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',

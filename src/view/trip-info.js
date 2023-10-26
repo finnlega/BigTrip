@@ -11,7 +11,7 @@ export const getTripInfo = (array) => {
 
 export const getDatesTrip = (array) => {
   for (let i = 0; i < array.length-1; i++) {
-    const result = `${dayjs(array[0].dateBegin).format('MMM DD')} &mdash; ${dayjs(array[array.length-1].dateEnd).format('DD')}`;
+    const result = `${dayjs(array[0].dateBegin).format('DD MMM')} &mdash; ${dayjs(array[array.length-1].dateEnd).format('DD MMM')}`;
     return result;
   }
 };
@@ -26,7 +26,7 @@ const createTripInfoTemplate = (info, dates) =>
   </section>`;
 
 export default class TripInfo {
-  constructor (infoAboutTrip, dates) {
+  constructor (infoAboutTrip = '', dates = '') {
     this._element = null;
     this._infoAboutTrip = infoAboutTrip;
     this._dates = dates;

@@ -7,6 +7,7 @@ import CostView from './view/cost';
 import FilterView from './view/filters';
 import PointTripView from './view/point-trip';
 import PointTripEditView from './view/edit-point';
+import NoPointTripView from './view/list-empty';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
 import { compareDates } from './view/utils';
@@ -39,6 +40,7 @@ const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
+
 const renderPoint = (pointListElement, point) => {
   const pointCompanent = new PointTripView(point);
   const pointEditComponent = new PointTripEditView(point);
@@ -51,14 +53,24 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(pointCompanent.getElement(), pointEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if(evt.key ==='ESC' || evt.key === 'Escape') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown',onEscKeyDown);
+    }
+  };
+
   pointCompanent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   pointEditComponent.getElement().querySelector('#edit').addEventListener('submit', (evt) => {
 
     evt.preventDefault();
     replaceFormToCard();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   render(pointListElement, pointCompanent.getElement(), RenderPosition.BEFOREEND);
@@ -92,14 +104,32 @@ render(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
 
 const listPoint = document.querySelector('.trip-events__list');
 
-// отрисует все элементы
 // points.forEach((element) => {
-//   render(listPoint, createPointTripTemplate(element));
-// });
+//   if(points.length === 0) {
+//     render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+//   } else {
+//     renderPoint(listPoint, element);
+//   }
+// // });
 
+// const checkPoint = (data) => {
+//   const filteredData = data.every((item) => item);
+//   if(filteredData) }{
+//     render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+//   } else {
+//     renderPoint(listPoint, points[i]);
+//   }
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  renderPoint(listPoint, points[i]);
+// };
+
+const EmptyData = points.every((element) => element === 0);
+
+if(EmptyData) {
+  render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+} else {
+  for (let i = 0; i <= POINT_COUNT-1; i++) {
+    renderPoint(listPoint, points[i]);
+  }
 }
 
 // Закомментировал для проверки на значения по умолчанию при создания новой карточки

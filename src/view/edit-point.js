@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { getRandomInteger, replaceString, createElement } from './utils';
+import { getRandomInteger, replaceString } from './utils';
 import { TYPE_POINT_TRIP } from './const';
+import AbstractView from './abstract';
 
 const BLANK_POINT = {
   basePrice : null,
@@ -118,26 +119,15 @@ const editPointTripTemplate = (point) => {
   );
 };
 
-export default class PointTripEdit {
+export default class PointTripEdit extends AbstractView {
 
   constructor (point = BLANK_POINT) {
-    this._element = null;
+    super();
 
     this._point = point;
   }
 
   getTemplate () {
     return editPointTripTemplate(this._point);
-  }
-
-  getElement () {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }

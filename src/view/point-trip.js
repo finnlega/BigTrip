@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { convertDate, eventduration, createElement } from './utils';
+import { convertDate, eventduration } from './utils';
 import { getOffer } from './offer';
+import AbstractView from './abstract';
 
 const createPointTripTemplate = (point) => {
 
@@ -47,25 +48,14 @@ const createPointTripTemplate = (point) => {
   );
 };
 
-export default class PointTrip {
+export default class PointTrip extends AbstractView {
 
   constructor (point) {
-    this._element = null;
+    super();
     this._point = point;
   }
 
   getTemplate () {
     return createPointTripTemplate(this._point);
-  }
-
-  getElement () {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }

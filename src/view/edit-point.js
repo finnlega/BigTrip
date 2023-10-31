@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { getRandomInteger, replaceString } from './utils';
+import { getRandomInteger } from '../utils/common';
+import { replaceString } from './utils';
 import { TYPE_POINT_TRIP } from './const';
 import AbstractView from './abstract';
 
@@ -125,9 +126,22 @@ export default class PointTripEdit extends AbstractView {
     super();
 
     this._point = point;
+
+    this._formSubmitHandler =this._formSubmitHandler.bind(this);
+
   }
 
   getTemplate () {
     return editPointTripTemplate(this._point);
+  }
+
+  _formSubmitHandler (evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler (callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('#edit').addEventListener('submit', this._formSubmitHandler);
   }
 }

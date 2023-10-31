@@ -61,14 +61,13 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointCompanent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointCompanent.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('#edit').addEventListener('submit', (evt) => {
+  pointEditComponent.setFormSubmitHandler(() => {
 
-    evt.preventDefault();
     replaceFormToCard();
     document.addEventListener('keydown', onEscKeyDown);
   });

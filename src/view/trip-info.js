@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { createElement } from './utils';
 import AbstractView from './abstract';
 
 export const getTripInfo = (array) => {

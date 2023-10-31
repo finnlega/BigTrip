@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/common';
-import { replaceString } from './utils';
+import { replaceString } from '../utils/common';
 import { TYPE_POINT_TRIP } from './const';
 import AbstractView from './abstract';
 
@@ -127,7 +127,7 @@ export default class PointTripEdit extends AbstractView {
 
     this._point = point;
 
-    this._formSubmitHandler =this._formSubmitHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
   }
 

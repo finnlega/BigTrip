@@ -1,5 +1,5 @@
 // import { dataCopy } from '../main';
-import { isDateInFuture, isDateInPast } from '../view/utils';
+import { isDateInFuture, isDateInPast } from '../utils/point';
 
 // const filterdates = (data) => {
 //   const filteredData = data.filter((item) => isDateInFuture(item.dateBegin) || isDateInPast(item.dateBegin) && isDateInFuture(item.dateEnd));

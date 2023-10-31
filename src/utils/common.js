@@ -33,3 +33,17 @@ export const dataCopy = (array) => {
   const data = array.slice();
   return data;
 };
+
+// Работа со строкой
+
+export const replaceString = (string) => {
+  const index = string.lastIndexOf(' ');
+  return string.slice(index + 1);
+};
+
+// Найдем по ключу обьект
+
+export const сompareType = (array, key) => {
+  const matching = array.find((item) => item.type === key);
+  return matching;
+};

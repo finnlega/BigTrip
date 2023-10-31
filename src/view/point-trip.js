@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { convertDate, eventduration } from './utils';
+import { convertDate, eventduration } from '../utils/point';
 import { getOffer } from './offer';
 import AbstractView from './abstract';
 

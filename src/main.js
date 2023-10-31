@@ -10,10 +10,10 @@ import PointTripEditView from './view/edit-point';
 import NoPointTripView from './view/list-empty';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
-import { compareDates } from './view/utils';
+// import { compareDates } from './utils/point';
 import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
-import { render, RenderPosition } from './view/utils';
+import { render, RenderPosition, replace } from './utils/render';
 
 const POINT_COUNT = 15;
 
@@ -27,9 +27,9 @@ const filters = generateFilter(points);
 
 // Сортировка массива объектов по дате
 
-const sortedArray = () => points.sort(compareDates);
+// const sortedArray = () => points.sort(compareDates);
 
-sortedArray();
+// sortedArray();
 
 const costPoints = countTheTotalAmount(points);
 const infoAboutTrip = getTripInfo(points);
@@ -46,14 +46,15 @@ const renderPoint = (pointListElement, point) => {
   const pointEditComponent = new PointTripEditView(point);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointCompanent.getElement());
+    replace(pointEditComponent, pointCompanent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointCompanent.getElement(), pointEditComponent.getElement());
+    replace(pointCompanent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
+    // debugger;
     if(evt.key ==='ESC' || evt.key === 'Escape') {
       evt.preventDefault();
       replaceFormToCard();
@@ -72,34 +73,34 @@ const renderPoint = (pointListElement, point) => {
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointCompanent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointCompanent, RenderPosition.BEFOREEND);
 };
 
 // Рендерит информацию о маршруте и датах
 
-render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
+render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip), RenderPosition.AFTERBEGIN);
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
 // рендерит общую стоимость
 
-render(tripInfo, new CostView(costPoints).getElement(), RenderPosition.BEFOREEND);
+render(tripInfo, new CostView(costPoints), RenderPosition.BEFOREEND);
 
 // Рендерит меню
 
-render(tripControls, new MenuView().getElement(), RenderPosition.BEFOREEND);
+render(tripControls, new MenuView(), RenderPosition.BEFOREEND);
 
 // Рендерит фильтры
 
-render(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
+render(tripFilters, new FilterView(filters), RenderPosition.BEFOREEND);
 
 // Рендерит cортировку
 
-render(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new SortingView(), RenderPosition.BEFOREEND);
 
 // Рендерит контейнер для points
 
-render(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new ListPointsView(), RenderPosition.BEFOREEND);
 
 const listPoint = document.querySelector('.trip-events__list');
 
@@ -124,7 +125,7 @@ const listPoint = document.querySelector('.trip-events__list');
 const EmptyData = points.every((element) => element === 0);
 
 if(EmptyData) {
-  render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, new NoPointTripView(), RenderPosition.BEFOREEND);
 } else {
   for (let i = 0; i <= POINT_COUNT-1; i++) {
     renderPoint(listPoint, points[i]);

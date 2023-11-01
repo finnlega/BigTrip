@@ -7,12 +7,13 @@ import CostView from './view/cost';
 import FilterView from './view/filters';
 import PointTripView from './view/point-trip';
 import PointTripEditView from './view/edit-point';
+import NoPointTripView from './view/list-empty';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
-import { compareDates } from './view/utils';
+import { compareDates } from './utils/point';
 import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
-import { render, RenderPosition } from './view/utils';
+import { render, RenderPosition, replace } from './utils/render';
 
 const POINT_COUNT = 15;
 
@@ -39,89 +40,120 @@ const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
+
 const renderPoint = (pointListElement, point) => {
   const pointCompanent = new PointTripView(point);
   const pointEditComponent = new PointTripEditView(point);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointCompanent.getElement());
+    replace(pointEditComponent, pointCompanent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointCompanent.getElement(), pointEditComponent.getElement());
+    replace(pointCompanent, pointEditComponent);
   };
 
-  pointCompanent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  const onEscKeyDown = (evt) => {
+    // debugger;
+    if(evt.key ==='ESC' || evt.key === 'Escape') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown',onEscKeyDown);
+    }
+  };
+
+  pointCompanent.setEditClickHandler(() => {
     replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().addEventListener('submit', (evt) => {
+  pointEditComponent.setFormSubmitHandler(() => {
 
-    evt.preventDefault();
     replaceFormToCard();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointCompanent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointCompanent, RenderPosition.BEFOREEND);
 };
 
 // Рендерит информацию о маршруте и датах
 
-render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip).getElement(), RenderPosition.AFTERBEGIN);
+render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip), RenderPosition.AFTERBEGIN);
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
 // рендерит общую стоимость
 
-render(tripInfo, new CostView(costPoints).getElement(), RenderPosition.BEFOREEND);
+render(tripInfo, new CostView(costPoints), RenderPosition.BEFOREEND);
 
 // Рендерит меню
 
-render(tripControls, new MenuView().getElement(), RenderPosition.BEFOREEND);
+render(tripControls, new MenuView(), RenderPosition.BEFOREEND);
 
 // Рендерит фильтры
 
-render(tripFilters, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
+render(tripFilters, new FilterView(filters), RenderPosition.BEFOREEND);
 
 // Рендерит cортировку
 
-render(tripEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new SortingView(), RenderPosition.BEFOREEND);
 
 // Рендерит контейнер для points
 
-render(tripEvents, new ListPointsView().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new ListPointsView(), RenderPosition.BEFOREEND);
 
 const listPoint = document.querySelector('.trip-events__list');
 
-// отрисует все элементы
 // points.forEach((element) => {
-//   render(listPoint, createPointTripTemplate(element));
-// });
+//   if(points.length === 0) {
+//     render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+//   } else {
+//     renderPoint(listPoint, element);
+//   }
+// // });
 
+// const checkPoint = (data) => {
+//   const filteredData = data.every((item) => item);
+//   if(filteredData) }{
+//     render(tripEvents, new NoPointTripView().getElement(), RenderPosition.BEFOREEND);
+//   } else {
+//     renderPoint(listPoint, points[i]);
+//   }
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  renderPoint(listPoint, points[i]);
+// };
+
+const EmptyData = points.every((element) => element === 0);
+
+if(EmptyData) {
+  render(tripEvents, new NoPointTripView(), RenderPosition.BEFOREEND);
+} else {
+  for (let i = 0; i <= POINT_COUNT-1; i++) {
+    renderPoint(listPoint, points[i]);
+  }
 }
 
-const removeElement = () => {
-  const data = document.querySelectorAll('.trip-events__item');
-  const tripEditForm = document.querySelector('.event');
-  tripEditForm.remove();
-  for (let i = 0; i <= data.length-1; i++) {
-    data[i].remove();
-  }
-};
+// Закомментировал для проверки на значения по умолчанию при создания новой карточки
 
-const addNewPoint = () => {
+// const removeElement = () => {
+//   const data = document.querySelectorAll('.trip-events__item');
+//   const tripEditForm = document.querySelector('.event');
+//   tripEditForm.remove();
+//   for (let i = 0; i <= data.length-1; i++) {
+//     data[i].remove();
+//   }
+// };
 
-  const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
-  buttonAddNewpoint.addEventListener('click', ()=> {
-    removeElement();
-    render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
-    for (let i = 0; i < POINT_COUNT; i++) {
-      renderPoint(listPoint, points[i]);
-    }
-  });
-};
+// const addNewPoint = () => {
 
-addNewPoint();
+//   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
+//   buttonAddNewpoint.addEventListener('click', ()=> {
+//     removeElement();
+//     render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
+//     for (let i = 0; i < POINT_COUNT; i++) {
+//       renderPoint(listPoint, points[i]);
+//     }
+//   });
+// };
+
+// addNewPoint();
 

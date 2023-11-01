@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../view/utils';
+import { getRandomInteger } from '../utils/common';
 import { TRIP_DESCRIPTION } from '../view/const';
 
 const COUNT_INITIAL = 0;

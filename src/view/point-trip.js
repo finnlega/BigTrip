@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { convertDate, eventduration, createElement } from './utils';
+import { convertDate, eventduration } from '../utils/point';
 import { getOffer } from './offer';
+import AbstractView from './abstract';
 
 const createPointTripTemplate = (point) => {
 
@@ -47,25 +48,26 @@ const createPointTripTemplate = (point) => {
   );
 };
 
-export default class PointTrip {
+export default class PointTrip extends AbstractView {
 
   constructor (point) {
-    this._element = null;
+    super();
     this._point = point;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate () {
     return createPointTripTemplate(this._point);
   }
 
-  getElement () {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _editClickHandler (evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement () {
-    this._element = null;
+  setEditClickHandler (callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }

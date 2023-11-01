@@ -1,5 +1,5 @@
 // import dayjs from 'dayjs';
-import { getRandomInteger, dataCopy, shuffleArray } from '../view/utils';
+import { getRandomInteger, dataCopy, shuffleArray } from '../utils/common';
 import { TYPE_POINT_TRIP, TITLES } from '../view/const';
 
 const OFFER_COUNT = 10;

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { createElement } from './utils';
+import AbstractView from './abstract';
 
 export const getTripInfo = (array) => {
   for (let i = 0; i < array.length-1; i++) {
@@ -11,7 +11,7 @@ export const getTripInfo = (array) => {
 
 export const getDatesTrip = (array) => {
   for (let i = 0; i < array.length-1; i++) {
-    const result = `${dayjs(array[0].dateBegin).format('MMM DD')} &mdash; ${dayjs(array[array.length-1].dateEnd).format('DD')}`;
+    const result = `${dayjs(array[0].dateBegin).format('DD MMM')} &mdash; ${dayjs(array[array.length-1].dateEnd).format('DD MMM')}`;
     return result;
   }
 };
@@ -25,26 +25,15 @@ const createTripInfoTemplate = (info, dates) =>
     </div>
   </section>`;
 
-export default class TripInfo {
-  constructor (infoAboutTrip, dates) {
-    this._element = null;
+export default class TripInfo extends AbstractView {
+  constructor (infoAboutTrip = '', dates = '') {
+    super();
     this._infoAboutTrip = infoAboutTrip;
     this._dates = dates;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._infoAboutTrip, this._dates);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

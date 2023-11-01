@@ -1,5 +1,7 @@
 // import dayjs from 'dayjs';
-import { getRandomInteger, getElementFromArray, сompareType, getDateBegin, getDateEnd } from '../view/utils';
+import { сompareType } from '../utils/common';
+import { getDateBegin, getDateEnd } from '../utils/point';
+import { getRandomInteger, getElementFromArray } from '../utils/common';
 import { TYPE_POINT_TRIP, TRIP_DESCRIPTION} from '../view/const';
 import { options } from './offer';
 import { getDescription, getPictures } from './picture';

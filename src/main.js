@@ -34,11 +34,9 @@ sortedArray();
 const costPoints = countTheTotalAmount(points);
 const infoAboutTrip = getTripInfo(points);
 const infoAboutDateTrip = getDatesTrip(points);
-
 const tripMain = document.querySelector('.trip-main');
 const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
-
 const tripEvents = document.querySelector('.trip-events');
 
 
@@ -95,15 +93,33 @@ render(tripControls, new MenuView(), RenderPosition.BEFOREEND);
 
 render(tripFilters, new FilterView(filters), RenderPosition.BEFOREEND);
 
-// Рендерит cортировку
 
-render(tripEvents, new SortingView(), RenderPosition.BEFOREEND);
+// Рендерит маршрут с точками
 
-// Рендерит контейнер для points
+const renderTripBoard = (tripContainer, tripPoints) => {
 
-render(tripEvents, new ListPointsView(), RenderPosition.BEFOREEND);
+  // Рендерит cортировку
+  render(tripContainer, new SortingView(), RenderPosition.BEFOREEND);
 
-const listPoint = document.querySelector('.trip-events__list');
+  // Рендерит контейнер list для points
+
+  const listPoint = new ListPointsView();
+  render(tripContainer, listPoint, RenderPosition.BEFOREEND);
+
+  // рендерит заглушку если нет точек маршрута
+
+  const EmptyData = tripPoints.every((element) => element === 0);
+
+  if(EmptyData) {
+    render(tripContainer, new NoPointTripView(), RenderPosition.BEFOREEND);
+  } else {
+    for (let i = 0; i <= POINT_COUNT-1; i++) {
+      renderPoint(listPoint, tripPoints[i]);
+    }
+  }
+};
+
+renderTripBoard(tripEvents, points);
 
 // points.forEach((element) => {
 //   if(points.length === 0) {
@@ -123,15 +139,15 @@ const listPoint = document.querySelector('.trip-events__list');
 
 // };
 
-const EmptyData = points.every((element) => element === 0);
+// const EmptyData = points.every((element) => element === 0);
 
-if(EmptyData) {
-  render(tripEvents, new NoPointTripView(), RenderPosition.BEFOREEND);
-} else {
-  for (let i = 0; i <= POINT_COUNT-1; i++) {
-    renderPoint(listPoint, points[i]);
-  }
-}
+// if(EmptyData) {
+//   render(tripEvents, new NoPointTripView(), RenderPosition.BEFOREEND);
+// } else {
+//   for (let i = 0; i <= POINT_COUNT-1; i++) {
+//     renderPoint(listPoint, points[i]);
+//   }
+// }
 
 // Закомментировал для проверки на значения по умолчанию при создания новой карточки
 

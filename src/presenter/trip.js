@@ -18,7 +18,7 @@ export default class Trip {
 
   init(tripPoints) {
     this._tripPoints = tripPoints.slice();
-    render(this._tripContainer, this._sortCompanent, RenderPosition.BEFOREEND);
+    this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
 
     this._renderTripBoard();
@@ -26,18 +26,23 @@ export default class Trip {
 
   _renderSort() {
     // логика рендера сортировки точек
+    render(this._tripContainer, this._sortCompanent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoint() {
     // рендер заглушки если нет точек маршрута
+    render(this._tripContainer, this.__noPointCompanent, RenderPosition.BEFOREEND);
   }
 
-  _renderPoint() {
+  _renderPoint(point) {
     // рендер точки маршрута
   }
 
   _renderPoints() {
     // логика отрисовки нескольких точек маршрута
+    this._tripPoints
+      .slice()
+      .forEach((tripPoint) => this._renderPoint(tripPoint));
   }
 
   _renderTripBoard() {
@@ -46,11 +51,10 @@ export default class Trip {
     const isEmpty = this._tripPoints.every((element) => element === 0);
 
     if(isEmpty) {
-      // render(this._tripContainer, this._renderNoPoint(), RenderPosition.BEFOREEND);
       this._renderNoPoint();
       return;
     }
-    this._renderSort();
+    // this._renderSort();
     this._renderPoints(this._countPoint);
     // for (let i = 0; i <= this._countPoint-1; i++) {
     //   this._renderPoint(this._listCompanent, this._tripPoints[i]);

@@ -38,6 +38,7 @@ const infoAboutDateTrip = getDatesTrip(points);
 const tripMain = document.querySelector('.trip-main');
 const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
+
 const tripEvents = document.querySelector('.trip-events');
 
 

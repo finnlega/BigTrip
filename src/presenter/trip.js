@@ -3,7 +3,7 @@ import ListPointsView from './view/list-point-trip';
 import NoPointTripView from './view/list-empty';
 import PointTripView from './view/point-trip';
 import PointTripEditView from './view/edit-point';
-import { render, RenderPosition } from './utils/render';
+import { render, RenderPosition, replace } from './utils/render';
 
 
 export default class Trip {
@@ -36,6 +36,38 @@ export default class Trip {
 
   _renderPoint(point) {
     // рендер точки маршрута
+    const pointCompanent = new PointTripView(point);
+    const pointEditComponent = new PointTripEditView(point);
+
+    const replaceCardToForm = () => {
+      replace(pointEditComponent, pointCompanent);
+    };
+
+    const replaceFormToCard = () => {
+      replace(pointCompanent, pointEditComponent);
+    };
+
+    const onEscKeyDown = (evt) => {
+      // debugger;
+      if(evt.key ==='ESC' || evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown',onEscKeyDown);
+      }
+    };
+
+    pointCompanent.setEditClickHandler(() => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.setFormSubmitHandler(() => {
+
+      replaceFormToCard();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    render(this._listCompanent, pointCompanent, RenderPosition.BEFOREEND);
   }
 
   _renderPoints() {

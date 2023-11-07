@@ -1,15 +1,14 @@
-import SortingView from './view/sorting';
-import ListPointsView from './view/list-point-trip';
-import NoPointTripView from './view/list-empty';
-import PointTripView from './view/point-trip';
-import PointTripEditView from './view/edit-point';
-import { render, RenderPosition, replace } from './utils/render';
+import SortingView from '../view/sorting';
+import ListPointsView from '../view/list-point-trip';
+import NoPointTripView from '../view/list-empty';
+import PointTripView from '../view/point-trip';
+import PointTripEditView from '../view/edit-point';
+import { render, RenderPosition, replace } from '../utils/render';
 
 
 export default class Trip {
-  constructor(tripContainer, _countPoints) {
+  constructor(tripContainer) {
     this._tripContainer = tripContainer;
-    this._countPoints = _countPoints;
 
     this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
@@ -31,7 +30,7 @@ export default class Trip {
 
   _renderNoPoint() {
     // рендер заглушки если нет точек маршрута
-    render(this._tripContainer, this.__noPointCompanent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 
   _renderPoint(point) {
@@ -48,7 +47,6 @@ export default class Trip {
     };
 
     const onEscKeyDown = (evt) => {
-      // debugger;
       if(evt.key ==='ESC' || evt.key === 'Escape') {
         evt.preventDefault();
         replaceFormToCard();
@@ -73,30 +71,18 @@ export default class Trip {
   _renderPoints() {
     // логика отрисовки нескольких точек маршрута
     this._tripPoints
-      .slice()
       .forEach((tripPoint) => this._renderPoint(tripPoint));
   }
 
   _renderTripBoard() {
-    // Метод для инициализации (начала работы) модуля,
-    // бОльшая часть текущей функции renderBoard в main.js
-    const isEmpty = this._tripPoints.every((element) => element === 0);
+    const isEmpty = this._tripPoints.length === 0;
 
     if(isEmpty) {
       this._renderNoPoint();
       return;
     }
     // this._renderSort();
-    this._renderPoints(this._countPoint);
-    // for (let i = 0; i <= this._countPoint-1; i++) {
-    //   this._renderPoint(this._listCompanent, this._tripPoints[i]);
-
-    // for (let i = 0; i <= this._tripPoints-1; i++) {
-    //   this._renderPoint(this._listCompanent, this._tripPoints[i]);
-    // }
-    // this._tripPoints.forEach((element) => {
-    //   this._renderPoint(this._listCompanent, element);
-    // });
+    this._renderPoints();
   }
 }
 

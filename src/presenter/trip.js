@@ -3,14 +3,18 @@ import ListPointsView from '../view/list-point-trip';
 import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
+import { updateItem } from '../utils/common';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._pointPresenter = {};
 
     this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(tripPoints) {
@@ -19,6 +23,12 @@ export default class Trip {
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
 
     this._renderTripBoard();
+  }
+
+  _handlePointChange(updatePoint) {
+    // Обновляет данные точки маршрута
+    this._tripPoints = updateItem(this._tripPoints, updatePoint);
+    this._pointPresenter[updatePoint.id].init(updatePoint);
   }
 
   _renderSort() {
@@ -34,8 +44,17 @@ export default class Trip {
   _renderPoint(point) {
     // рендер точки маршрута
 
-    const pointPresenter = new PointPresenter(this._listCompanent);
+    const pointPresenter = new PointPresenter(this._listCompanent, this._handlePointChange);
+    // console.log(this);
     pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
+  _clearPointList() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
   }
 
   _renderPoints() {

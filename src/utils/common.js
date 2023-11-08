@@ -47,3 +47,20 @@ export const сompareType = (array, key) => {
   const matching = array.find((item) => item.type === key);
   return matching;
 };
+
+// Обновление Элемент
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+  // console.log('индекс', index);
+
+  if(index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index+1),
+  ];
+};

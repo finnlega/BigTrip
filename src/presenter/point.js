@@ -1,6 +1,6 @@
 import PointTripView from '../view/point-trip';
 import PointTripEditView from '../view/edit-point';
-import { replace, render, RenderPosition } from '../utils/render';
+import { replace, render, RenderPosition, remove } from '../utils/render';
 
 export default class Point {
   constructor(pointListContainer) {
@@ -18,14 +18,37 @@ export default class Point {
 
     this._point = point;
 
+    const prevPointCompanent = this._pointCompanent;
+    const prevPointEditCompanent = this._pointEditCompanent;
+
     this._pointCompanent = new PointTripView(point);
     this._pointEditCompanent = new PointTripEditView(point);
 
     this._pointCompanent.setEditClickHandler(this._handleEditClick);
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);
 
-    render(this._pointListContainer, this._pointCompanent, RenderPosition.BEFOREEND);
+    if (prevPointCompanent === null || prevPointEditCompanent === null) {
+      render(this._pointListContainer, this._pointCompanent, RenderPosition.BEFOREEND);
+      return;
+    }
 
+    if(this._pointListContainer.getElement().contains(prevPointCompanent.getElement())) {
+      replace(this._pointCompanent, prevPointCompanent);
+    }
+
+    if(this._pointListContainer.getElement().contains(prevPointEditCompanent.getElement())) {
+      replace(this._pointEditCompanent, prevPointEditCompanent);
+    }
+
+    remove(prevPointCompanent);
+    remove(prevPointEditCompanent);
+  }
+
+  // очистка точек маршрута
+
+  destroy() {
+    remove(this._pointCompanent);
+    remove(this._pointEditCompanent);
   }
 
   _replaceCardToForm () {

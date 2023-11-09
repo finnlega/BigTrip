@@ -81,3 +81,4 @@ export const getDateEnd = (date) => {
 // Функция для сравнения дат
 
 export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBegin);
+

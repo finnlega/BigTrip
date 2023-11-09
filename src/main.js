@@ -4,7 +4,7 @@ import CostView from './view/cost';
 import FilterView from './view/filters';
 import { generatePoint } from './mock/point';
 import { generateFilter } from './mock/filter';
-import { compareDates } from './utils/point';
+// import { compareDates } from './utils/point';
 import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
 import { render, RenderPosition } from './utils/render';
@@ -22,9 +22,9 @@ const filters = generateFilter(points);
 
 // Сортировка массива объектов по дате
 
-const sortedArray = () => points.sort(compareDates);
+// const sortedArray = () => points.sort(compareDates);
 
-sortedArray();
+// sortedArray();
 
 const costPoints = countTheTotalAmount(points);
 const infoAboutTrip = getTripInfo(points);

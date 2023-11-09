@@ -1,4 +1,5 @@
 // import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import { сompareType } from '../utils/common';
 import { getDateBegin, getDateEnd } from '../utils/point';
 import { getRandomInteger, getElementFromArray } from '../utils/common';
@@ -17,6 +18,7 @@ const generatePoint = () => {
   const type = getElementFromArray(TYPE_POINT_TRIP);
 
   return ({
+    id: nanoid(),
     basePrice: getRandomInteger(PRICE_MIN, PRICE_MAX),
     dateBegin: dateBegin.toDate(),
     dateEnd: dateEnd.toDate(),

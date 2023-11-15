@@ -78,7 +78,12 @@ export const getDateEnd = (date) => {
   return dateEnd;
 };
 
-// Функция для сравнения дат
+// Сравнения дат
 
 export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBegin);
 
+// Сравнение по стоимости от большего к меньшему
+
+export const comparePrice = (a, b) => b.basePrice - a.basePrice;
+
+//

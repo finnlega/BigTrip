@@ -4,14 +4,14 @@ import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
 import { updateItem } from '../utils/common';
-import { sortType } from '../view/const';
-// import { compareDates } from '../utils/point';
+import { SortType } from '../view/const';
+import { compareDates, comparePrice } from '../utils/point';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
-    this.currentSort = sortType.DAY;
+    this._currentSort = SortType.DAY;
 
     this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
@@ -24,12 +24,18 @@ export default class Trip {
   }
 
   init(tripPoints) {
-    this._tripPoints = tripPoints.slice();
+    this._tripPoints = tripPoints
+      .slice()
+      .sort(compareDates);
 
+    this._sourcedTripPoints = this._tripPoints.slice();
+    // console.log('отсортированный исходный массив по date', this._tripPoints);
+    // console.log('копия исходного массива по date', this._sourcedTripPoints);
     // добавить сортировку по умолчанию
     // this.tripPointsSort = compareDates(this._tripPoints);
     // сохраняем исходный массив для сортировки по колонке day
-    this._initSourcePointsSort = this._tripPoints.slice();
+    // this._initSourcePointsSort = this._tripPoints.slice();
+    // this._newSortPoints = null;
 
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
@@ -43,12 +49,37 @@ export default class Trip {
     this._pointPresenter[updatePoint.id].init(updatePoint);
   }
 
-  _sortPoints() {
-    // console.log(this);
+  _sortPoints(sortType) {
+    console.log('значение сортировки', sortType);
+    switch (sortType) {
+      case SortType.PRICE:
+        this._tripPoints.sort(comparePrice);
+        console.log('отсортированный исходный массив по PRICE', this._tripPoints);
+        break;
+
+      default:
+        this._tripPoints = this._sourcedTripPoints.slice();
+        console.log('исходный масссив по DAY', this._tripPoints);
+        break;
+    }
+
+    this._currentSort = sortType;
+    // debugger;
+    // this._newSortPoints = this._tripPoints.sort(compareDates);
+    // console.log(this._newSortPoints);
   }
 
-  _handleChangeTypeSort() {
-    this._sortPoints(this);
+  _handleChangeTypeSort(sortType) {
+    // debugger;
+    console.log('обработчик', this);
+    // this._sortPoints(this);
+    if (this._currentSort === sortType) {
+      return;
+    }
+    this._sortPoints(sortType);
+    this._clearPointList();
+    this._renderPoints();
+
     // - Сортируем задачи
     // - Очищаем список
     // - Рендерим список заново

@@ -14,7 +14,7 @@ export const TRIP_DESCRIPTION = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.' ];
 
-export const sortType = {
+export const SortType = {
   DAY: 'default',
   TIME: 'time',
   PRICE: 'price',

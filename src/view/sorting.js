@@ -41,15 +41,13 @@ export default class Sorting extends AbstractView {
   }
 
   _sortChangeTypeHandler(evt) {
-    // debugger;
-    // console.dir(evt.target);
     if(evt.target.className !== 'trip-sort__btn'){
       return;
     }
 
     evt.preventDefault();
     this._callback.sortChange(evt.target.dataset.sortType); // получаем dataset атрибут  sort-type из разметки выше
-    console.log('значение, снимаемое с обработчика', evt.target.dataset.sortType);
+    // console.log('значение, снимаемое с обработчика', evt.target.dataset.sortType);
   }
 
   setChangeSortHandler(callback) {

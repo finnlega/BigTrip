@@ -86,4 +86,15 @@ export const compareDates = (a, b) => new Date(a.dateBegin) - new Date(b.dateBeg
 
 export const comparePrice = (a, b) => b.basePrice - a.basePrice;
 
-//
+// получит время в миниутах
+
+const getTimeInMinute = (point) => {
+  const start = dayjs(point.dateBegin);
+  const end = dayjs(point.dateEnd);
+  const difference = end.diff(start, 'minute');
+  return difference;
+};
+
+// Сравнение по времени от большего к меньшему
+
+export const compareTime = (a, b) => getTimeInMinute(b) - getTimeInMinute(a);

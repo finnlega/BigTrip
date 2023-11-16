@@ -5,7 +5,7 @@ import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
 import { updateItem } from '../utils/common';
 import { SortType } from '../view/const';
-import { compareDates, comparePrice } from '../utils/point';
+import { compareDates, comparePrice, compareTime } from '../utils/point';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -29,13 +29,6 @@ export default class Trip {
       .sort(compareDates);
 
     this._sourcedTripPoints = this._tripPoints.slice();
-    // console.log('отсортированный исходный массив по date', this._tripPoints);
-    // console.log('копия исходного массива по date', this._sourcedTripPoints);
-    // добавить сортировку по умолчанию
-    // this.tripPointsSort = compareDates(this._tripPoints);
-    // сохраняем исходный массив для сортировки по колонке day
-    // this._initSourcePointsSort = this._tripPoints.slice();
-    // this._newSortPoints = null;
 
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
@@ -50,39 +43,33 @@ export default class Trip {
   }
 
   _sortPoints(sortType) {
-    console.log('значение сортировки', sortType);
+    // console.log('значение сортировки', sortType);
     switch (sortType) {
       case SortType.PRICE:
         this._tripPoints.sort(comparePrice);
-        console.log('отсортированный исходный массив по PRICE', this._tripPoints);
+        // console.log('отсортированный исходный массив по PRICE', this._tripPoints);
         break;
-
+      case SortType.TIME:
+        this._tripPoints.sort(compareTime);
+        // console.log('отсортированный исходный массив по TIME', this._tripPoints);
+        break;
       default:
         this._tripPoints = this._sourcedTripPoints.slice();
-        console.log('исходный масссив по DAY', this._tripPoints);
+        // console.log('исходный масссив по DAY', this._tripPoints);
         break;
     }
 
     this._currentSort = sortType;
-    // debugger;
-    // this._newSortPoints = this._tripPoints.sort(compareDates);
-    // console.log(this._newSortPoints);
   }
 
   _handleChangeTypeSort(sortType) {
-    // debugger;
-    console.log('обработчик', this);
-    // this._sortPoints(this);
+    // console.log('обработчик', this);
     if (this._currentSort === sortType) {
       return;
     }
     this._sortPoints(sortType);
     this._clearPointList();
     this._renderPoints();
-
-    // - Сортируем задачи
-    // - Очищаем список
-    // - Рендерим список заново
   }
 
   _renderSort() {
@@ -132,8 +119,6 @@ export default class Trip {
       this._renderNoPoint();
       return;
     }
-    // this._renderSort();
     this._renderPoints();
   }
 }
-

@@ -4,11 +4,14 @@ import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
 import { updateItem } from '../utils/common';
+import { SortType } from '../view/const';
+import { compareDates, comparePrice, compareTime } from '../utils/point';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
+    this._currentSort = SortType.DAY;
 
     this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
@@ -16,10 +19,17 @@ export default class Trip {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
+
   }
 
   init(tripPoints) {
-    this._tripPoints = tripPoints.slice();
+    this._tripPoints = tripPoints
+      .slice()
+      .sort(compareDates);
+
+    this._sourcedTripPoints = this._tripPoints.slice();
+
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
 
@@ -32,9 +42,41 @@ export default class Trip {
     this._pointPresenter[updatePoint.id].init(updatePoint);
   }
 
+  _sortPoints(sortType) {
+    // console.log('значение сортировки', sortType);
+    switch (sortType) {
+      case SortType.PRICE:
+        this._tripPoints.sort(comparePrice);
+        // console.log('отсортированный исходный массив по PRICE', this._tripPoints);
+        break;
+      case SortType.TIME:
+        this._tripPoints.sort(compareTime);
+        // console.log('отсортированный исходный массив по TIME', this._tripPoints);
+        break;
+      default:
+        this._tripPoints = this._sourcedTripPoints.slice();
+        // console.log('исходный масссив по DAY', this._tripPoints);
+        break;
+    }
+
+    this._currentSort = sortType;
+  }
+
+  _handleChangeTypeSort(sortType) {
+    // console.log('обработчик', this);
+    if (this._currentSort === sortType) {
+      return;
+    }
+    this._sortPoints(sortType);
+    this._clearPointList();
+    this._renderPoints();
+  }
+
   _renderSort() {
     // логика рендера сортировки точек
+    // debugger;
     render(this._tripContainer, this._sortCompanent, RenderPosition.BEFOREEND);
+    this._sortCompanent.setChangeSortHandler(this._handleChangeTypeSort);
   }
 
   _renderNoPoint() {
@@ -77,8 +119,6 @@ export default class Trip {
       this._renderNoPoint();
       return;
     }
-    // this._renderSort();
     this._renderPoints();
   }
 }
-

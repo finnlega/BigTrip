@@ -144,6 +144,20 @@ export default class PointTripEdit extends AbstractView {
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
   }
 
+  updateData(update) {
+    if(!update) {
+      return;
+    }
+
+    this.data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+
+    this.updateElement();
+  }
+
   updateElement() {
     const prevElement = this.getElement();
     const parentElement = prevElement.parentElement;

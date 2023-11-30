@@ -9,6 +9,7 @@ import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
 import { render, RenderPosition } from './utils/render';
 import TripPresenter from './presenter/trip';
+// import Point from './presenter/point';
 
 const POINT_COUNT = 15;
 
@@ -72,11 +73,14 @@ tripPresenter.init(points);
 
 //   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
 //   buttonAddNewpoint.addEventListener('click', ()=> {
+//     debugger;
 //     removeElement();
-//     render(listPoint, new PointTripEditView().getElement(), RenderPosition.AFTERBEGIN);
-//     for (let i = 0; i < POINT_COUNT; i++) {
-//       renderPoint(listPoint, points[i]);
-//     }
+//     render(tripEvents, new Point, RenderPosition.AFTERBEGIN);
+//     tripPresenter.init()
+//     // tripPresenter.init(points);
+//     // for (let i = 0; i < POINT_COUNT; i++) {
+//     //   renderPoint(listPoint, points[i]);
+//     // }
 //   });
 // };
 

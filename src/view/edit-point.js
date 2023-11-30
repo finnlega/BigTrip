@@ -49,9 +49,7 @@ const getPictures = (data, isData) => {
 };
 
 const editPointTripTemplate = (point) => {
-  const { basePrice, destination, offer, dateBegin, dateEnd, isBasePrice, isDateBegin, isDateEnd, isOffer, isDataOffer, isDestination, isDataDestination } = point;
-  console.log(offer);
-  // debugger;
+  const { basePrice, destination, offer, dateBegin, dateEnd, isBasePrice, isDateBegin, isDateEnd, isOffer, isDataOffer, isDestination, isDataDestination, isOfferType, isDestinationName } = point;
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" id="edit" action="#" method="post">
@@ -59,7 +57,7 @@ const editPointTripTemplate = (point) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              ${offer.type !== undefined ? `<img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">` : ''}
+              ${isOfferType ? `<img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">` : ''}
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -73,9 +71,9 @@ const editPointTripTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${offer.type !== undefined ? offer.type : ''}
+              ${isOfferType ? offer.type : ''}
             </label>
-            ${destination.name !== undefined ? `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">`
+            ${isDestinationName ? `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">`
       : '<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">'}
             <datalist id="destination-list-1">
               ${createCitiesTemplate()}
@@ -146,6 +144,15 @@ export default class PointTripEdit extends AbstractView {
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
   }
 
+  updateElement() {
+    const prevElement = this.getElement();
+    const parentElement = prevElement.parentElement;
+
+    this.removeElement();
+    const newElement = this.getElement();
+    parentElement.replaceChild(newElement, prevElement);
+  }
+
   setFormSubmitHandler (callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('#edit').addEventListener('submit', this._formSubmitHandler);
@@ -159,13 +166,12 @@ export default class PointTripEdit extends AbstractView {
         isBasePrice : point.basePrice !== null,
         isDateEnd : point.dateEnd !== null,
         isDateBegin: point.dateBegin !== null,
-        // point: console.log(point),
         isOffer: point.offer !== '', // посмотреть что будет при null
         isDataOffer: point.offer.offers.length !== 0,
         isDestination: point.destination !== '',
         isDataDestination: point.destination.pictures.length !== 0,
-        // isDueDate: task.dueDate !== null,
-        // isRepeating: isTaskRepeating(task.repeating),
+        isOfferType: point.offer.type !== undefined,
+        isDestinationName: point.destination.name !== undefined,
       },
     );
   }
@@ -200,21 +206,14 @@ export default class PointTripEdit extends AbstractView {
     if(!data.isDataDestination) {
       data.isDataDestination = 0;
     }
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
 
-    // if (!data.isRepeating) {
-    //   data.repeating = {
-    //     mo: false,
-    //     tu: false,
-    //     we: false,
-    //     th: false,
-    //     fr: false,
-    //     sa: false,
-    //     su: false,
-    //   };
-    // }
+    if(!data.isOfferType) {
+      data.isOfferType = undefined;
+    }
+
+    if(!data.isDestinationName) {
+      data.isDestinationName = undefined;
+    }
 
     delete data.isBasePrice;
     delete data.isDateBegin;
@@ -223,6 +222,8 @@ export default class PointTripEdit extends AbstractView {
     delete data.isDataOffer;
     delete data.isDestination;
     delete data.isDataDestination;
+    delete data.isOfferType;
+    delete data.isDestinationName;
     return data;
   }
 }

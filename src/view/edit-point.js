@@ -132,8 +132,15 @@ export default class PointTripEdit extends AbstractView {
     this._data = PointTripEdit.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
+    this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
+    this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
 
+    this.getElement().querySelector('.event__type-label').addEventListener('change', this._changeOfferTypeEditHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
   }
+
 
   getTemplate () {
     return editPointTripTemplate(this._data);
@@ -142,29 +149,72 @@ export default class PointTripEdit extends AbstractView {
   _formSubmitHandler (evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
+    console.log(this._data);
+
+    // Добавил updateElement в отправку формы
+    this.updateElement();
   }
 
-  updateData(update) {
+  updateData(update, justDataupdating) {
     if(!update) {
       return;
     }
 
-    this.data = Object.assign(
+    this._data = Object.assign(
       {},
       this._data,
       update,
     );
 
+    if(justDataupdating) {
+      return;
+    }
+    console.log(update);
     this.updateElement();
   }
 
   updateElement() {
     const prevElement = this.getElement();
+    console.log('prevElem', prevElement);
     const parentElement = prevElement.parentElement;
 
     this.removeElement();
     const newElement = this.getElement();
+    console.log('newElem', newElement);
     parentElement.replaceChild(newElement, prevElement);
+    console.log(this._data);
+  }
+
+  _basePriceEditHandler(evt) {
+    evt.preventDefault();
+    // debugger;
+    // console.log(evt.target.value);
+    this.updateData({
+      basePrice: evt.target.value,
+    }, true);
+
+  }
+
+  _destinationNameEditHandler(evt) {
+    // debugger;
+    evt.preventDefault();
+    console.log(evt.target.value);
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+      },
+    }, true);
+    // console.log(this.name);
+  }
+
+  _changeOfferTypeEditHandler(evt) {
+    // debugger;
+    evt.preventDefault();
+    console.log(evt.target.value);
+    this.updateData({
+      OfferType: evt.target.value,
+    }, true);
+    console.log(this.isOfferType);
   }
 
   setFormSubmitHandler (callback) {
@@ -238,6 +288,7 @@ export default class PointTripEdit extends AbstractView {
     delete data.isDataDestination;
     delete data.isOfferType;
     delete data.isDestinationName;
+    console.log(data);
     return data;
   }
 }

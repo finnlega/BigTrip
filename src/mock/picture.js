@@ -5,6 +5,7 @@ const COUNT_INITIAL = 0;
 const COUNT_MIN = 1;
 const COUNT_MAX = 5;
 
+
 const pictures = {
   src: 'src',
   description: 'description',
@@ -33,3 +34,9 @@ export const getPictures = () => {
   }
   return data;
 };
+
+
+// const createAllDescription = () => new Array(5).fill().map(() => getPictures());
+
+// export const desc = createAllDescription();
+// console.log('desc',desc);

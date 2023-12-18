@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/common';
-import { replaceString } from '../utils/common';
+import { replaceString, сompareType } from '../utils/common';
 import { TYPE_POINT_TRIP } from './const';
 import AbstractView from './abstract';
+import { options } from '../mock/offer';
 
 const BLANK_POINT = {
   basePrice : null,
@@ -136,7 +137,18 @@ export default class PointTripEdit extends AbstractView {
     this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
 
-    this.getElement().querySelector('.event__type-label').addEventListener('change', this._changeOfferTypeEditHandler);
+    this._types = this.getElement().querySelectorAll('.event__type-input');
+    this._offers = this.getElement().querySelectorAll('.event__offer-selector');
+
+    this._types.forEach((element) => {
+      // console.log(element);
+      element.addEventListener('change', this._changeOfferTypeEditHandler);
+    });
+
+    this._listOffer = this.getElement().querySelector('.event__type-list');
+    this._nameTypeMarkup = this.getElement().querySelector('.event__type-output');
+    this._typeIcon = this.getElement().querySelector('.event__type-icon');
+
     this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
   }
@@ -156,6 +168,7 @@ export default class PointTripEdit extends AbstractView {
   }
 
   updateData(update, justDataupdating) {
+    // debugger;
     if(!update) {
       return;
     }
@@ -174,6 +187,7 @@ export default class PointTripEdit extends AbstractView {
   }
 
   updateElement() {
+    // debugger;
     const prevElement = this.getElement();
     console.log('prevElem', prevElement);
     const parentElement = prevElement.parentElement;
@@ -187,34 +201,43 @@ export default class PointTripEdit extends AbstractView {
 
   _basePriceEditHandler(evt) {
     evt.preventDefault();
-    // debugger;
-    // console.log(evt.target.value);
     this.updateData({
       basePrice: evt.target.value,
     }, true);
-
   }
 
   _destinationNameEditHandler(evt) {
-    // debugger;
     evt.preventDefault();
-    console.log(evt.target.value);
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-      },
-    }, true);
-    // console.log(this.name);
+    const updateDestinationName = {
+      destination: Object.assign(
+        {},
+        this._data.destination,
+        { name: evt.target.value },
+      ),
+    };
+    this.updateData(updateDestinationName, true);
   }
 
   _changeOfferTypeEditHandler(evt) {
+
     // debugger;
     evt.preventDefault();
-    console.log(evt.target.value);
-    this.updateData({
-      OfferType: evt.target.value,
-    }, true);
-    console.log(this.isOfferType);
+    const nameType = evt.target.value;
+    console.log('выбранный тип', evt.target.value);
+    console.log('все офферы', options);
+    const updateOfferType = {
+      offer: Object.assign(
+        {},
+        this._data.offer,
+        сompareType(options, nameType),
+      ),
+    };
+    this._listOffer.style.display = 'none';
+    this._nameTypeMarkup.innerHTML = nameType;
+    this._typeIcon.src = `img/icons/${nameType}.png`;
+
+    this.updateData(updateOfferType, true);
+    console.log(updateOfferType);
   }
 
   setFormSubmitHandler (callback) {

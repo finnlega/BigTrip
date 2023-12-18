@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/common';
-import { replaceString, сompareType } from '../utils/common';
-import { TYPE_POINT_TRIP } from './const';
+import { replaceString, findByKeyValue } from '../utils/common';
+import { TYPE_POINT_TRIP, CITIES } from './const';
 import AbstractView from './abstract';
 import { options } from '../mock/offer';
 
@@ -20,10 +20,7 @@ const createTypePointTemplate = () =>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
     </div>`).join('');
 
-const createCitiesTemplate = () => {
-  const cities = [ 'Amsterdam', 'Chamonix', 'Geneva', 'Tokyo', 'Lisbon' ];
-  return cities.map((city) => `<option value="${city}"></option>`).join('');
-};
+const createCitiesTemplate = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
 const createOfferPointTemplate = (data, isData) => {
   // debugger;
@@ -114,7 +111,7 @@ const editPointTripTemplate = (point) => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${isDestination ? destination.description.join() : ''}</p>
+            <p class="event__destination-description">${isDestination ? destination.description.join(' ') : ''}</p>
 
                 ${isDestination ? getPictures(destination.pictures, isDataDestination) : ''}
 
@@ -229,7 +226,7 @@ export default class PointTripEdit extends AbstractView {
       offer: Object.assign(
         {},
         this._data.offer,
-        сompareType(options, nameType),
+        findByKeyValue(options, 'type', nameType),
       ),
     };
     this._listOffer.style.display = 'none';

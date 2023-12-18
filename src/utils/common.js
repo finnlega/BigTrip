@@ -1,3 +1,4 @@
+
 // Вернет случайное число
 
 export const getRandomInteger = (a = 0, b = 1) => {
@@ -41,10 +42,10 @@ export const replaceString = (string) => {
   return string.slice(index + 1);
 };
 
-// Найдем по ключу обьект
+// Найдем по ключу значение обьекта
 
-export const сompareType = (array, key) => {
-  const matching = array.find((item) => item.type === key);
+export const findByKeyValue = (array, key, value) => {
+  const matching = array.find((item) => item[key] === value);
   return matching;
 };
 

@@ -11,7 +11,7 @@ import { render, RenderPosition } from './utils/render';
 import TripPresenter from './presenter/trip';
 // import Point from './presenter/point';
 
-const POINT_COUNT = 1;
+const POINT_COUNT = 15;
 
 // Сгенерируем 15 точек маршрута
 

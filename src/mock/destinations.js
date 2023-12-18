@@ -1,5 +1,6 @@
 import { getRandomInteger } from '../utils/common';
-import { TRIP_DESCRIPTION } from '../view/const';
+import { TRIP_DESCRIPTION, CITIES } from '../view/const';
+import { dataCopy } from '../utils/common';
 
 const COUNT_INITIAL = 0;
 const COUNT_MIN = 1;
@@ -35,8 +36,20 @@ export const getPictures = () => {
   return data;
 };
 
+const CopyDataCitiesPointTrip = dataCopy(CITIES);
 
-// const createAllDescription = () => new Array(5).fill().map(() => getPictures());
+// Описываем содержимое объекта Destinations
 
-// export const desc = createAllDescription();
-// console.log('desc',desc);
+const createDestinations = () => {
+  const name = CopyDataCitiesPointTrip.shift();
+  const destination = {
+    name,
+    description: getDescription(TRIP_DESCRIPTION),
+    pictures:  [...getPictures()],
+  };
+  return destination;
+};
+
+const createAllDestinations = () => new Array(CITIES.length).fill().map(() => createDestinations());
+
+export const destinations = createAllDestinations();

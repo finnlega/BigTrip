@@ -49,7 +49,7 @@ export const findByKeyValue = (array, key, value) => {
   return matching;
 };
 
-// Обновление Элемент
+// Обновление Элемента
 
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);

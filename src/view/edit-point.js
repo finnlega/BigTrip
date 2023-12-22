@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils/common';
+// import { getRandomInteger } from '../utils/common';
 import { replaceString, findByKeyValue } from '../utils/common';
 import { TYPE_POINT_TRIP, CITIES } from './const';
 import AbstractView from './abstract';
 import { options } from '../mock/offer';
+import { destinations } from '../mock/destinations';
 
 const BLANK_POINT = {
   basePrice : null,
@@ -26,7 +27,7 @@ const createOfferPointTemplate = (data, isData) => {
   // debugger;
   const result = isData
     ? data.map((offer) => `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${getRandomInteger(0,1) ? 'checked' : ''}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${offer.isChecked ? 'checked' : ''}>
         <label class="event__offer-label" for="event-offer-${replaceString(offer.title)}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -133,21 +134,23 @@ export default class PointTripEdit extends AbstractView {
     this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
     this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
+    this._clickOfferhandler = this._clickOfferhandler.bind(this);
 
-    this._types = this.getElement().querySelectorAll('.event__type-input');
-    this._offers = this.getElement().querySelectorAll('.event__offer-selector');
+    // this._types = this.getElement().querySelectorAll('.event__type-input');
+    // this._offers = this.getElement().querySelectorAll('.event__offer-selector');
 
-    this._types.forEach((element) => {
-      // console.log(element);
-      element.addEventListener('change', this._changeOfferTypeEditHandler);
-    });
+    // this._types.forEach((element) => {
+    //   // console.log(element);
+    //   element.addEventListener('change', this._changeOfferTypeEditHandler);
+    // });
 
     this._listOffer = this.getElement().querySelector('.event__type-list');
     this._nameTypeMarkup = this.getElement().querySelector('.event__type-output');
     this._typeIcon = this.getElement().querySelector('.event__type-icon');
 
-    this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
-    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
+    this._setInnerHandlers();
+    // this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
+    // this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
   }
 
 
@@ -194,6 +197,32 @@ export default class PointTripEdit extends AbstractView {
     console.log('newElem', newElement);
     parentElement.replaceChild(newElement, prevElement);
     console.log(this._data);
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    console.log('Handlers restored!');
+  }
+
+  _setInnerHandlers() {
+    this._types = this.getElement().querySelectorAll('.event__type-input');
+    this._types.forEach((element) => {
+      // console.log(element);
+      element.addEventListener('change', this._changeOfferTypeEditHandler);
+    });
+    this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
+
+    // list offers
+
+    this._offers = this.getElement().querySelectorAll('.event__offer-checkbox');
+    this._offers.forEach((element) => {
+      console.log(element);
+      element.addEventListener('click', this._clickOfferhandler);
+    });
+
   }
 
   _basePriceEditHandler(evt) {
@@ -205,14 +234,15 @@ export default class PointTripEdit extends AbstractView {
 
   _destinationNameEditHandler(evt) {
     evt.preventDefault();
+    const nameCity = evt.target.value;
     const updateDestinationName = {
       destination: Object.assign(
         {},
         this._data.destination,
-        { name: evt.target.value },
+        findByKeyValue(destinations, 'name', nameCity),
       ),
     };
-    this.updateData(updateDestinationName, true);
+    this.updateData(updateDestinationName, false);
   }
 
   _changeOfferTypeEditHandler(evt) {
@@ -233,8 +263,14 @@ export default class PointTripEdit extends AbstractView {
     this._nameTypeMarkup.innerHTML = nameType;
     this._typeIcon.src = `img/icons/${nameType}.png`;
 
-    this.updateData(updateOfferType, true);
+    this.updateData(updateOfferType, false);
     console.log(updateOfferType);
+  }
+
+  _clickOfferhandler(evt) {
+    evt.preventDefault();
+    const offer =  evt.target.value;
+    console.log(offer);
   }
 
   setFormSubmitHandler (callback) {

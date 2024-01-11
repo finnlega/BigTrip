@@ -1,30 +1,30 @@
 // import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { сompareType } from '../utils/common';
 import { getDateBegin, getDateEnd } from '../utils/point';
-import { getRandomInteger, getElementFromArray } from '../utils/common';
-import { TYPE_POINT_TRIP, TRIP_DESCRIPTION} from '../view/const';
+import { getRandomInteger, getElementFromArray, findByKeyValue } from '../utils/common';
+import { TYPE_POINT_TRIP, CITIES} from '../view/const';
 import { options } from './offer';
-import { getDescription, getPictures } from './picture';
+import { destinations } from './destinations';
 
 const PRICE_MIN = 100;
 const PRICE_MAX = 500;
 
-const cities = [ 'Amsterdam', 'Chamonix', 'Geneva', 'Tokyo', 'Lisbon' ];
+console.log(destinations);
 
 const generatePoint = () => {
   const dateBegin = getDateBegin();
   const dateEnd = getDateEnd(dateBegin);
   const type = getElementFromArray(TYPE_POINT_TRIP);
+  const nameCity = getElementFromArray(CITIES);
 
   return ({
     id: nanoid(),
     basePrice: getRandomInteger(PRICE_MIN, PRICE_MAX),
     dateBegin: dateBegin.toDate(),
     dateEnd: dateEnd.toDate(),
-    destination: {description: getDescription(TRIP_DESCRIPTION), name: getElementFromArray(cities), pictures:[ ...getPictures()]},
+    destination: findByKeyValue(destinations, 'name', nameCity),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offer: сompareType(options, type),
+    offer: findByKeyValue(options, 'type', type),
   });
 };
 

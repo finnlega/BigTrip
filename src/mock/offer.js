@@ -13,6 +13,7 @@ const PRICE_MAX_VALUE_OFFER = 500;
 const offers = {
   title: 'title',
   price: 'price',
+  isChecked: 'isChecked',
 };
 
 // Сгенерируем дополнительные опции
@@ -31,6 +32,7 @@ const getSomeOffers = () => {
     data.push({
       [offers.title] : title,
       [offers.price] : getRandomInteger(PRICE_MIN_VALUE_OFFER, PRICE_MAX_VALUE_OFFER),
+      [offers.isChecked] : getRandomInteger(0,1),
     });
   }
   return data;

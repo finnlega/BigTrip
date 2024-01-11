@@ -7,6 +7,9 @@ import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
 import { changeCheckboxState } from '../utils/point';
 // import { countTheTotalAmount } from '../view/cost';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 
 const BLANK_POINT = {
@@ -139,14 +142,6 @@ export default class PointTripEdit extends SmartView {
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
     this._clickOfferhandler = this._clickOfferhandler.bind(this);
 
-    // this._types = this.getElement().querySelectorAll('.event__type-input');
-    // this._offers = this.getElement().querySelectorAll('.event__offer-selector');
-
-    // this._types.forEach((element) => {
-    //   // console.log(element);
-    //   element.addEventListener('change', this._changeOfferTypeEditHandler);
-    // });
-
     this._listOffer = this.getElement().querySelector('.event__type-list');
     this._nameTypeMarkup = this.getElement().querySelector('.event__type-output');
     this._typeIcon = this.getElement().querySelector('.event__type-icon');
@@ -156,6 +151,11 @@ export default class PointTripEdit extends SmartView {
     // this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
   }
 
+  reset(point) {
+    this.updateData(
+      PointTripEdit.parsePointToData(point),
+    );
+  }
 
   getTemplate () {
     return editPointTripTemplate(this._data);

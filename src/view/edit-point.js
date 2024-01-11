@@ -170,39 +170,6 @@ export default class PointTripEdit extends SmartView {
     this.updateElement();
   }
 
-  // updateData(update, justDataupdating) {
-  //   // debugger;
-  //   if(!update) {
-  //     return;
-  //   }
-
-  //   this._data = Object.assign(
-  //     {},
-  //     this._data,
-  //     update,
-  //   );
-
-  //   if(justDataupdating) {
-  //     return;
-  //   }
-  //   console.log(update);
-  //   this.updateElement();
-  // }
-
-  // updateElement() {
-  //   // debugger;
-  //   const prevElement = this.getElement();
-  //   console.log('prevElem', prevElement);
-  //   const parentElement = prevElement.parentElement;
-
-  //   this.removeElement();
-  //   const newElement = this.getElement();
-  //   console.log('newElem', newElement);
-  //   parentElement.replaceChild(newElement, prevElement);
-  //   console.log(this._data);
-  //   this.restoreHandlers();
-  // }
-
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
@@ -231,7 +198,6 @@ export default class PointTripEdit extends SmartView {
     this.updateData({
       basePrice: evt.target.value,
     }, true);
-
   }
 
   _destinationNameEditHandler(evt) {

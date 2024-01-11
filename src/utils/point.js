@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from './common';
+import { replaceString } from './common';
 // конвертация даты
 
 export const convertDate = (date) => {
@@ -98,3 +99,23 @@ const getTimeInMinute = (point) => {
 // Сравнение по времени от большего к меньшему
 
 export const compareTime = (a, b) => getTimeInMinute(b) - getTimeInMinute(a);
+
+// Удаление лишних символов
+
+const replaceSymbol = (str) => {
+  const index = str.lastIndexOf('-');
+  return str.slice(index + 1);
+};
+
+export const changeCheckboxState = (array, name, boolean) => {
+  array.forEach((element) => {
+    if(replaceString(element.title) === replaceSymbol(name)){
+      if(boolean) {
+        element.isChecked = 1;
+      } else {
+        element.isChecked = 0;
+      }
+      return element.isChecked;
+    }
+  });
+};

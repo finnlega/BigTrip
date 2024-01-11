@@ -5,6 +5,9 @@ import { TYPE_POINT_TRIP, CITIES } from './const';
 import AbstractView from './abstract';
 import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
+import { changeCheckboxState } from '../utils/point';
+// import { countTheTotalAmount } from '../view/cost';
+
 
 const BLANK_POINT = {
   basePrice : null,
@@ -219,10 +222,8 @@ export default class PointTripEdit extends AbstractView {
 
     this._offers = this.getElement().querySelectorAll('.event__offer-checkbox');
     this._offers.forEach((element) => {
-      console.log(element);
       element.addEventListener('click', this._clickOfferhandler);
     });
-
   }
 
   _basePriceEditHandler(evt) {
@@ -230,6 +231,7 @@ export default class PointTripEdit extends AbstractView {
     this.updateData({
       basePrice: evt.target.value,
     }, true);
+
   }
 
   _destinationNameEditHandler(evt) {
@@ -269,8 +271,21 @@ export default class PointTripEdit extends AbstractView {
 
   _clickOfferhandler(evt) {
     evt.preventDefault();
-    const offer =  evt.target.value;
-    console.log(offer);
+    const element = evt.target;
+    let checkboxValue = null;
+    if(element.checked) {
+      checkboxValue = true;
+    } else {
+      checkboxValue = false;
+    }
+    const updateCheckboxChecked = {
+      offer: Object.assign(
+        {},
+        this._data.offer,
+        changeCheckboxState(this._data.offer.offers, evt.target.name, checkboxValue),
+      ),
+    };
+    this.updateData(updateCheckboxChecked, false);
   }
 
   setFormSubmitHandler (callback) {

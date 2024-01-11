@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 // import { getRandomInteger } from '../utils/common';
 import { replaceString, findByKeyValue } from '../utils/common';
 import { TYPE_POINT_TRIP, CITIES } from './const';
-import AbstractView from './abstract';
+import SmartView from './smart';
 import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
 import { changeCheckboxState } from '../utils/point';
@@ -126,7 +126,7 @@ const editPointTripTemplate = (point) => {
   );
 };
 
-export default class PointTripEdit extends AbstractView {
+export default class PointTripEdit extends SmartView {
 
   constructor (point = BLANK_POINT) {
     super();
@@ -170,38 +170,38 @@ export default class PointTripEdit extends AbstractView {
     this.updateElement();
   }
 
-  updateData(update, justDataupdating) {
-    // debugger;
-    if(!update) {
-      return;
-    }
+  // updateData(update, justDataupdating) {
+  //   // debugger;
+  //   if(!update) {
+  //     return;
+  //   }
 
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
+  //   this._data = Object.assign(
+  //     {},
+  //     this._data,
+  //     update,
+  //   );
 
-    if(justDataupdating) {
-      return;
-    }
-    console.log(update);
-    this.updateElement();
-  }
+  //   if(justDataupdating) {
+  //     return;
+  //   }
+  //   console.log(update);
+  //   this.updateElement();
+  // }
 
-  updateElement() {
-    // debugger;
-    const prevElement = this.getElement();
-    console.log('prevElem', prevElement);
-    const parentElement = prevElement.parentElement;
+  // updateElement() {
+  //   // debugger;
+  //   const prevElement = this.getElement();
+  //   console.log('prevElem', prevElement);
+  //   const parentElement = prevElement.parentElement;
 
-    this.removeElement();
-    const newElement = this.getElement();
-    console.log('newElem', newElement);
-    parentElement.replaceChild(newElement, prevElement);
-    console.log(this._data);
-    this.restoreHandlers();
-  }
+  //   this.removeElement();
+  //   const newElement = this.getElement();
+  //   console.log('newElem', newElement);
+  //   parentElement.replaceChild(newElement, prevElement);
+  //   console.log(this._data);
+  //   this.restoreHandlers();
+  // }
 
   restoreHandlers() {
     this._setInnerHandlers();

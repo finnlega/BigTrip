@@ -135,20 +135,47 @@ export default class PointTripEdit extends SmartView {
     super();
 
     this._data = PointTripEdit.parsePointToData(point);
+    this._datapicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
     this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
     this._clickOfferhandler = this._clickOfferhandler.bind(this);
+    this._dateBeginChangeHandler = this._dateBeginChangeHandler.bind(this);
 
     this._listOffer = this.getElement().querySelector('.event__type-list');
     this._nameTypeMarkup = this.getElement().querySelector('.event__type-output');
     this._typeIcon = this.getElement().querySelector('.event__type-icon');
 
     this._setInnerHandlers();
-    // this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
-    // this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
+    this._setDatepicker();
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    const timeInputs = this.getElement().querySelectorAll('.event__input--time');
+    timeInputs.forEach((element) => {
+      this._datapicker = flatpickr(element, {
+        enableTime: true,
+        // time_24hr: true,
+        dateFormat: 'd/m/y H:S',
+        defaultDate: null,
+        onChange: (selectedDate) => {
+          if(element === timeInputs[0]) {
+            this._dateBeginChangeHandler(selectedDate);
+          } else if(element === timeInputs[1]){
+            this._dateEndChangeHandler(selectedDate);
+          }
+        },
+      });
+    });
   }
 
   reset(point) {
@@ -164,7 +191,7 @@ export default class PointTripEdit extends SmartView {
   _formSubmitHandler (evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
-    console.log(this._data);
+    // console.log(this._data);
 
     // Добавил updateElement в отправку формы
     this.updateElement();
@@ -173,7 +200,7 @@ export default class PointTripEdit extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    console.log('Handlers restored!');
+    // console.log('Handlers restored!');
   }
 
   _setInnerHandlers() {
@@ -218,8 +245,8 @@ export default class PointTripEdit extends SmartView {
     // debugger;
     evt.preventDefault();
     const nameType = evt.target.value;
-    console.log('выбранный тип', evt.target.value);
-    console.log('все офферы', options);
+    // console.log('выбранный тип', evt.target.value);
+    // console.log('все офферы', options);
     const updateOfferType = {
       offer: Object.assign(
         {},
@@ -232,7 +259,7 @@ export default class PointTripEdit extends SmartView {
     this._typeIcon.src = `img/icons/${nameType}.png`;
 
     this.updateData(updateOfferType, false);
-    console.log(updateOfferType);
+    // console.log(updateOfferType);
   }
 
   _clickOfferhandler(evt) {
@@ -252,6 +279,18 @@ export default class PointTripEdit extends SmartView {
       ),
     };
     this.updateData(updateCheckboxChecked, false);
+  }
+
+  _dateBeginChangeHandler([userDate]) {
+    this.updateData({
+      dateBegin: userDate,
+    });
+  }
+
+  _dateEndChangeHandler([userDate]) {
+    this.updateData({
+      dateEnd: userDate,
+    });
   }
 
   setFormSubmitHandler (callback) {
@@ -325,7 +364,7 @@ export default class PointTripEdit extends SmartView {
     delete data.isDataDestination;
     delete data.isOfferType;
     delete data.isDestinationName;
-    console.log(data);
+    // console.log(data);
     return data;
   }
 }

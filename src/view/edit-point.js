@@ -135,7 +135,7 @@ export default class PointTripEdit extends SmartView {
     super();
 
     this._data = PointTripEdit.parsePointToData(point);
-    this._datapicker = null;
+    this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
@@ -143,6 +143,7 @@ export default class PointTripEdit extends SmartView {
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
     this._clickOfferhandler = this._clickOfferhandler.bind(this);
     this._dateBeginChangeHandler = this._dateBeginChangeHandler.bind(this);
+    this._dateEndChangeHandler = this._dateEndChangeHandler.bind(this);
 
     this._listOffer = this.getElement().querySelector('.event__type-list');
     this._nameTypeMarkup = this.getElement().querySelector('.event__type-output');
@@ -153,6 +154,7 @@ export default class PointTripEdit extends SmartView {
   }
 
   _setDatepicker() {
+
     if (this._datepicker) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
@@ -160,16 +162,22 @@ export default class PointTripEdit extends SmartView {
       this._datepicker = null;
     }
 
+    const compareDate = (a, b) => new Date(a) - new Date(b);
+
     const timeInputs = this.getElement().querySelectorAll('.event__input--time');
     timeInputs.forEach((element) => {
       this._datapicker = flatpickr(element, {
-        enableTime: true,
-        // time_24hr: true,
         dateFormat: 'd/m/y H:S',
         defaultDate: null,
         onChange: (selectedDate) => {
+          // debugger;
           if(element === timeInputs[0]) {
-            this._dateBeginChangeHandler(selectedDate);
+            if(compareDate(this._data.dateEnd, selectedDate) < 0) {
+              element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
+            } else {
+              element.setCustomValidity('');
+              this._dateBeginChangeHandler(selectedDate);
+            }
           } else if(element === timeInputs[1]){
             this._dateEndChangeHandler(selectedDate);
           }
@@ -200,6 +208,7 @@ export default class PointTripEdit extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this._setDatepicker();
     // console.log('Handlers restored!');
   }
 

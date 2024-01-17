@@ -8,8 +8,9 @@ import { SortType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel) {
     this._tripContainer = tripContainer;
+    this._pointsModel = pointsModel;
     this._pointPresenter = {};
     this._currentSort = SortType.DAY;
 
@@ -34,6 +35,10 @@ export default class Trip {
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
 
     this._renderTripBoard();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _handlePointChange(updatePoint) {

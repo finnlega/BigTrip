@@ -9,6 +9,7 @@ import { countTheTotalAmount } from './view/cost';
 import { getTripInfo, getDatesTrip } from './view/trip-info';
 import { render, RenderPosition } from './utils/render';
 import TripPresenter from './presenter/trip';
+import PoinsModel from './model/points';
 // import Point from './presenter/point';
 
 const POINT_COUNT = 22;
@@ -17,6 +18,9 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
 
 const filters = generateFilter(points);
+
+const pointsModel = new PoinsModel();
+pointsModel.setPoints(points);
 // console.log(filters);
 
 // Сортировка массива объектов по дате
@@ -52,7 +56,7 @@ render(tripControls, new MenuView(), RenderPosition.BEFOREEND);
 render(tripFilters, new FilterView(filters), RenderPosition.BEFOREEND);
 
 // Рендерит точки маршрута
-const tripPresenter = new TripPresenter(tripEvents);
+const tripPresenter = new TripPresenter(tripEvents, pointsModel);
 
 tripPresenter.init(points);
 

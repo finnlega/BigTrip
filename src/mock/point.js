@@ -9,7 +9,7 @@ import { destinations } from './destinations';
 const PRICE_MIN = 100;
 const PRICE_MAX = 500;
 
-console.log(destinations);
+// console.log(destinations);
 
 const generatePoint = () => {
   const dateBegin = getDateBegin();

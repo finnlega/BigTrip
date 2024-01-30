@@ -25,12 +25,14 @@ export default class Trip {
 
   }
 
-  init(tripPoints) {
-    this._tripPoints = tripPoints
-      .slice()
-      .sort(compareDates);
+  init() {
 
-    this._sourcedTripPoints = this._tripPoints.slice();
+    this._pointsModel.getPoints().slice().sort(compareDates);
+    // this._tripPoints = tripPoints
+    //   .slice()
+    //   .sort(compareDates);
+
+    // this._sourcedTripPoints = this._tripPoints.slice();
 
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
@@ -40,43 +42,38 @@ export default class Trip {
 
   // получает данные модели
   _getPoints() {
+    switch(this._currentSort) {
+      case SortType.PRICE:
+        this._pointsModel.getPoints().slice().sort(comparePrice);
+        break;
+      case SortType.TIME:
+        this._pointsModel.getPoints().slice().sort(compareTime);
+        break;
+    }
+
     return this._pointsModel.getPoints();
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _handlePointChange(updatePoint) {
-    // Обновляет данные точки маршрута
+    // Вызывает обвновление данных модели
     this._tripPoints = updateItem(this._tripPoints, updatePoint);
     this._pointPresenter[updatePoint.id].init(updatePoint);
   }
 
-  _sortPoints(sortType) {
-    // console.log('значение сортировки', sortType);
-    switch (sortType) {
-      case SortType.PRICE:
-        this._tripPoints.sort(comparePrice);
-        // console.log('отсортированный исходный массив по PRICE', this._tripPoints);
-        break;
-      case SortType.TIME:
-        this._tripPoints.sort(compareTime);
-        // console.log('отсортированный исходный массив по TIME', this._tripPoints);
-        break;
-      default:
-        this._tripPoints = this._sourcedTripPoints.slice();
-        // console.log('исходный масссив по DAY', this._tripPoints);
-        break;
-    }
-
-    this._currentSort = sortType;
-  }
-
   _handleChangeTypeSort(sortType) {
-    // console.log('обработчик', this);
+    // debugger;
     if (this._currentSort === sortType) {
       return;
     }
-    this._sortPoints(sortType);
+    this._currentSort = sortType;
     this._clearPointList();
-    this._renderPoints();
+    this._renderTripBoard();
   }
 
   _renderSort() {
@@ -84,11 +81,6 @@ export default class Trip {
     // debugger;
     render(this._tripContainer, this._sortCompanent, RenderPosition.BEFOREEND);
     this._sortCompanent.setChangeSortHandler(this._handleChangeTypeSort);
-  }
-
-  _renderNoPoint() {
-    // рендер заглушки если нет точек маршрута
-    render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 
   _renderPoint(point) {
@@ -100,6 +92,16 @@ export default class Trip {
     this._pointPresenter[point.id] = pointPresenter;
   }
 
+  _renderPoints(points) {
+    // логика отрисовки нескольких точек маршрута
+    points.forEach((point) => this._renderPoint(point));
+  }
+
+  _renderNoPoint() {
+    // рендер заглушки если нет точек маршрута
+    render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
+  }
+
   _clearPointList() {
     Object
       .values(this._pointPresenter)
@@ -107,25 +109,19 @@ export default class Trip {
     this._pointPresenter = {};
   }
 
-  _handleModeChange() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _renderPoints() {
-    // логика отрисовки нескольких точек маршрута
-    this._tripPoints
-      .forEach((tripPoint) => this._renderPoint(tripPoint));
-  }
-
   _renderTripBoard() {
-    const isEmpty = this._tripPoints.length === 0;
+    const isEmpty = this._getPoints().length === 0;
 
     if(isEmpty) {
       this._renderNoPoint();
       return;
     }
-    this._renderPoints();
+    const points = this._getPoints().slice();
+    this._renderSort();
+
+    // console.log('точки маршрута', points);
+    // this._renderSort();
+
+    this._renderPoints(points);
   }
 }

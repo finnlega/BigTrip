@@ -59,7 +59,7 @@ render(tripFilters, new FilterView(filters), RenderPosition.BEFOREEND);
 // Рендерит точки маршрута
 const tripPresenter = new TripPresenter(tripEvents, pointsModel);
 
-tripPresenter.init(points);
+tripPresenter.init();
 
 // Закомментировал для проверки на значения по умолчанию при создания новой карточки
 

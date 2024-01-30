@@ -1,6 +1,7 @@
 import PointTripView from '../view/point-trip';
 import PointTripEditView from '../view/edit-point';
 import { replace, render, RenderPosition, remove } from '../utils/render';
+import { UserAction, UpdateType } from '../view/const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -93,13 +94,20 @@ export default class Point {
     this._replaceCardToForm();
   }
 
+  // чем отличается от formSubmitHandle в pointEdit
+
   _handleFormSubmit(point) {
-    this._handleChangeData(point);
+    this._handleChangeData(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      point);
     this._replaceFormToCard();
   }
 
   _handleOnFavoriteClick() {
     this._handleChangeData(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,

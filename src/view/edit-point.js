@@ -202,6 +202,7 @@ export default class PointTripEdit extends SmartView {
     // console.log(this._data);
 
     // Добавил updateElement в отправку формы
+    // console.log(this._formSubmitHandler);
     this.updateElement();
   }
 

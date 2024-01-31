@@ -26,32 +26,22 @@ export default class Trip {
   }
 
   init() {
-
-    this._pointsModel.getPoints().slice().sort(compareDates);
-    // this._tripPoints = tripPoints
-    //   .slice()
-    //   .sort(compareDates);
-
-    // this._sourcedTripPoints = this._tripPoints.slice();
-
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
 
     this._renderTripBoard();
   }
 
-  // получает данные модели
+  // получает данные модели и сортирует их
   _getPoints() {
     switch(this._currentSort) {
       case SortType.PRICE:
-        this._pointsModel.getPoints().slice().sort(comparePrice);
-        break;
+        return this._pointsModel.getPoints().slice().sort(comparePrice);
       case SortType.TIME:
-        this._pointsModel.getPoints().slice().sort(compareTime);
-        break;
+        return this._pointsModel.getPoints().slice().sort(compareTime);
     }
 
-    return this._pointsModel.getPoints();
+    return this._pointsModel.getPoints().slice().sort(compareDates);
   }
 
   _handleModeChange() {
@@ -117,7 +107,7 @@ export default class Trip {
       return;
     }
     const points = this._getPoints().slice();
-    this._renderSort();
+    // this._renderSort();
 
     // console.log('точки маршрута', points);
     // this._renderSort();

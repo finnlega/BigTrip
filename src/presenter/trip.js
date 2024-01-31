@@ -3,7 +3,7 @@ import ListPointsView from '../view/list-point-trip';
 import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
-import { updateItem } from '../utils/common';
+// import { updateItem } from '../utils/common';
 import { SortType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 
@@ -19,9 +19,12 @@ export default class Trip {
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
 
-    this._handlePointChange = this._handlePointChange.bind(this);
+    // this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
+    this._pointsModel.addObserver(this._handleModelEvent);
 
   }
 
@@ -50,11 +53,27 @@ export default class Trip {
       .forEach((presenter) => presenter.resetView());
   }
 
-  _handlePointChange(updatePoint) {
-    // Вызывает обвновление данных модели
-    this._tripPoints = updateItem(this._tripPoints, updatePoint);
-    this._pointPresenter[updatePoint.id].init(updatePoint);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
+  // _handlePointChange(updatePoint) {
+  //   // Вызывает обвновление данных модели
+  //   this._tripPoints = updateItem(this._tripPoints, updatePoint);
+  //   this._pointPresenter[updatePoint.id].init(updatePoint);
+  // }
 
   _handleChangeTypeSort(sortType) {
     // debugger;
@@ -76,7 +95,7 @@ export default class Trip {
   _renderPoint(point) {
     // рендер точки маршрута
 
-    const pointPresenter = new PointPresenter(this._listCompanent, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._listCompanent, this._handleViewAction, this._handleModeChange);
     // console.log(this);
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;

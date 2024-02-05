@@ -4,7 +4,7 @@ import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import { render, RenderPosition } from '../utils/render';
 // import { updateItem } from '../utils/common';
-import { SortType } from '../view/const';
+import { SortType, UpdateType, UserAction } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 
 export default class Trip {
@@ -55,6 +55,17 @@ export default class Trip {
 
   _handleViewAction(actionType, updateType, update) {
     console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
@@ -63,6 +74,18 @@ export default class Trip {
 
   _handleModelEvent(updateType, data) {
     console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.PointPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)

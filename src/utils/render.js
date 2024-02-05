@@ -52,6 +52,10 @@ export const replace = (newChild, oldChild) => {
 };
 
 export const remove = (companent) => {
+  if(companent === null) {
+    return;
+  }
+
   if(!(companent instanceof Abstract)) {
     throw new Error('Can remove only companent');
   }

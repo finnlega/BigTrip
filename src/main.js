@@ -12,7 +12,7 @@ import TripPresenter from './presenter/trip';
 import PointsModel from './model/point';
 // import Point from './presenter/point';
 
-const POINT_COUNT = 4;
+const POINT_COUNT = 1;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);

@@ -10,6 +10,7 @@ import { changeCheckboxState } from '../utils/point';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+// import ListPointsView from './list-point-trip';
 
 
 const BLANK_POINT = {
@@ -151,6 +152,7 @@ export default class PointTripEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+
   }
 
   _setDatepicker() {
@@ -170,7 +172,6 @@ export default class PointTripEdit extends SmartView {
         dateFormat: 'd/m/y H:S',
         defaultDate: null,
         onChange: (selectedDate) => {
-          // debugger;
           if(element === timeInputs[0]) {
             if(compareDate(this._data.dateEnd, selectedDate) < 0) {
               element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
@@ -199,23 +200,17 @@ export default class PointTripEdit extends SmartView {
   _formSubmitHandler (evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
-    // console.log(this._data);
-
-    // Добавил updateElement в отправку формы
-    this.updateElement();
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this._setDatepicker();
-    // console.log('Handlers restored!');
   }
 
   _setInnerHandlers() {
     this._types = this.getElement().querySelectorAll('.event__type-input');
     this._types.forEach((element) => {
-      // console.log(element);
       element.addEventListener('change', this._changeOfferTypeEditHandler);
     });
     this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
@@ -268,7 +263,6 @@ export default class PointTripEdit extends SmartView {
     this._typeIcon.src = `img/icons/${nameType}.png`;
 
     this.updateData(updateOfferType, false);
-    // console.log(updateOfferType);
   }
 
   _clickOfferhandler(evt) {

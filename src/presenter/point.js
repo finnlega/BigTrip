@@ -76,6 +76,7 @@ export default class Point {
   }
 
   _replaceFormToCard () {
+    // debugger;
     replace(this._pointCompanent, this._pointEditCompanent);
     document.addEventListener('keydown', this._handlerOnEscKeyDown);
     this._mode = Mode.DEFAULT;
@@ -95,6 +96,7 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
+    // debugger;
     this._handleChangeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,

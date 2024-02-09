@@ -136,9 +136,12 @@ export default class PointTripEdit extends SmartView {
     super();
 
     this._data = PointTripEdit.parsePointToData(point);
-    this._datepicker = null;
+    this._datepickerStart = null;
+    this._datepickerEnd = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+
     this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
     this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
@@ -152,40 +155,123 @@ export default class PointTripEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+    // this._setDatepickerEnd();
 
   }
+
+  removeElement() {
+    // debugger;
+    super.removeElement();
+    if (this._datepickerStart) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
+
+    if (this._datepickerEnd) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
+
+  // _setDatepicker() {
+
+  //   if (this._datepicker) {
+  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+  //     // которые создает flatpickr при инициализации
+  //     debugger;
+  //     this._datepicker.destroy();
+  //     this._datepicker = null;
+  //   }
+
+  //   const compareDate = (a, b) => new Date(a) - new Date(b);
+
+  //   const timeInputs = this.getElement().querySelectorAll('.event__input--time');
+  //   console.log(timeInputs);
+  //   timeInputs.forEach((element) => {
+  //     this._datepicker = flatpickr(element, {
+  //       dateFormat: 'd/m/y H:S',
+  //       defaultDate: null,
+  //       onChange: (selectedDate) => {
+  //         if(element === timeInputs[0]) {
+  //           if(compareDate(this._data.dateEnd, selectedDate) < 0) {
+  //             element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
+  //           } else {
+  //             element.setCustomValidity('');
+  //             this._dateBeginChangeHandler(selectedDate);
+  //           }
+  //         } else if(element === timeInputs[1]){
+  //           this._dateEndChangeHandler(selectedDate);
+  //         }
+  //       },
+  //     });
+  //   });
+  // }
+
+  // Для каждого Инпута даты напишем datepiker
 
   _setDatepicker() {
 
-    if (this._datepicker) {
+    if (this._datepickerStart) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
-      this._datepicker.destroy();
-      this._datepicker = null;
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
     }
 
-    const compareDate = (a, b) => new Date(a) - new Date(b);
+    if (this._datepickerEnd) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+    // const compareDate = (a, b) => new Date(a) - new Date(b);
 
-    const timeInputs = this.getElement().querySelectorAll('.event__input--time');
-    timeInputs.forEach((element) => {
-      this._datapicker = flatpickr(element, {
+    // console.log(timeInputsBegin);
+    this._datepickerStart = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
         dateFormat: 'd/m/y H:S',
-        defaultDate: null,
-        onChange: (selectedDate) => {
-          if(element === timeInputs[0]) {
-            if(compareDate(this._data.dateEnd, selectedDate) < 0) {
-              element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
-            } else {
-              element.setCustomValidity('');
-              this._dateBeginChangeHandler(selectedDate);
-            }
-          } else if(element === timeInputs[1]){
-            this._dateEndChangeHandler(selectedDate);
-          }
-        },
-      });
-    });
+        defaultDate: this._data.dateBegin,
+        onChange: this._dateBeginChangeHandler,
+      },
+    );
+
+    this._datepickerEnd = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:S',
+        defaultDate: this._data.dateEnd,
+        onChange: this._dateEndChangeHandler,
+      },
+    );
+
   }
+
+  // _setDatepickerEnd() {
+
+  //   if (this._datepicker) {
+  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+  //     // которые создает flatpickr при инициализации
+  //     this._datepicker.destroy();
+  //     this._datepicker = null;
+  //   }
+
+  //   // if(this._data.dateEnd) {
+
+  //   this._datepicker = flatpickr(
+  //     this.getElement().querySelector('#event-end-time-1'),
+  //     {
+  //       dateFormat: 'd/m/y H:S',
+  //       defaultDate: this._data.dateEnd,
+  //       onChange: this._dateEndChangeHandler,
+  //     },
+  //   );
+  // // }
+  // }
 
   reset(point) {
     this.updateData(
@@ -202,10 +288,17 @@ export default class PointTripEdit extends SmartView {
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
   }
 
+  _formDeleteClickHandler (evt) {
+    evt.preventDefault();
+    this._callback.clickDelete(PointTripEdit.parseDataToPoint(this._data));
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.clickDelete);
     this._setDatepicker();
+    // this._setDatepickerEnd();
   }
 
   _setInnerHandlers() {
@@ -299,6 +392,11 @@ export default class PointTripEdit extends SmartView {
   setFormSubmitHandler (callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('#edit').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler (callback) {
+    this._callback.clickDelete = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {

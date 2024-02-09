@@ -127,6 +127,7 @@ export default class Trip {
   _renderPoints(points) {
     // логика отрисовки нескольких точек маршрута
     points.forEach((point) => this._renderPoint(point));
+    console.log('после изменений', points);
   }
 
   _renderNoPoint() {
@@ -134,15 +135,11 @@ export default class Trip {
     render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 
-  _clearPointList() {
+  _clearTripBoard({resetSortType = false} = {}) {
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-  }
-
-  _clearTripBoard({resetSortType = false} = {}) {
-    this._clearPointList();
 
     remove(this._sortCompanent);
     remove(this._noPointCompanent);

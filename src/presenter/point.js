@@ -22,6 +22,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlerOnEscKeyDown = this._handlerOnEscKeyDown.bind(this);
     this._handleOnFavoriteClick = this._handleOnFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -36,6 +37,7 @@ export default class Point {
 
     this._pointCompanent.setEditClickHandler(this._handleEditClick);
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditCompanent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointCompanent.setFavoriteClickhandler(this._handleOnFavoriteClick);
 
     if (prevPointCompanent === null || prevPointEditCompanent === null) {
@@ -103,6 +105,15 @@ export default class Point {
       point,
     );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(point) {
+
+    this._handleChangeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 
   _handleOnFavoriteClick() {

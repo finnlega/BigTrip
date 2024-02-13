@@ -155,8 +155,6 @@ export default class PointTripEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
-    // this._setDatepickerEnd();
-
   }
 
   removeElement() {
@@ -177,40 +175,6 @@ export default class PointTripEdit extends SmartView {
     }
   }
 
-  // _setDatepicker() {
-
-  //   if (this._datepicker) {
-  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-  //     // которые создает flatpickr при инициализации
-  //     debugger;
-  //     this._datepicker.destroy();
-  //     this._datepicker = null;
-  //   }
-
-  //   const compareDate = (a, b) => new Date(a) - new Date(b);
-
-  //   const timeInputs = this.getElement().querySelectorAll('.event__input--time');
-  //   console.log(timeInputs);
-  //   timeInputs.forEach((element) => {
-  //     this._datepicker = flatpickr(element, {
-  //       dateFormat: 'd/m/y H:S',
-  //       defaultDate: null,
-  //       onChange: (selectedDate) => {
-  //         if(element === timeInputs[0]) {
-  //           if(compareDate(this._data.dateEnd, selectedDate) < 0) {
-  //             element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
-  //           } else {
-  //             element.setCustomValidity('');
-  //             this._dateBeginChangeHandler(selectedDate);
-  //           }
-  //         } else if(element === timeInputs[1]){
-  //           this._dateEndChangeHandler(selectedDate);
-  //         }
-  //       },
-  //     });
-  //   });
-  // }
-
   // Для каждого Инпута даты напишем datepiker
 
   _setDatepicker() {
@@ -228,15 +192,22 @@ export default class PointTripEdit extends SmartView {
       this._datepickerEnd.destroy();
       this._datepickerEnd = null;
     }
-    // const compareDate = (a, b) => new Date(a) - new Date(b);
+    const compareDate = (a, b) => new Date(a) - new Date(b);
 
-    // console.log(timeInputsBegin);
     this._datepickerStart = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
         dateFormat: 'd/m/y H:S',
         defaultDate: this._data.dateBegin,
-        onChange: this._dateBeginChangeHandler,
+        onChange: (selectedDate) => {
+          const inputElement = this._datepickerStart.input;
+          if(compareDate(this._data.dateEnd, selectedDate) < 0) {
+            inputElement.setCustomValidity('Дата начала не может быть больше даты окончания поездки');
+          } else {
+            inputElement.setCustomValidity('');
+            this._dateBeginChangeHandler(selectedDate);
+          }
+        },
       },
     );
 
@@ -248,30 +219,7 @@ export default class PointTripEdit extends SmartView {
         onChange: this._dateEndChangeHandler,
       },
     );
-
   }
-
-  // _setDatepickerEnd() {
-
-  //   if (this._datepicker) {
-  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-  //     // которые создает flatpickr при инициализации
-  //     this._datepicker.destroy();
-  //     this._datepicker = null;
-  //   }
-
-  //   // if(this._data.dateEnd) {
-
-  //   this._datepicker = flatpickr(
-  //     this.getElement().querySelector('#event-end-time-1'),
-  //     {
-  //       dateFormat: 'd/m/y H:S',
-  //       defaultDate: this._data.dateEnd,
-  //       onChange: this._dateEndChangeHandler,
-  //     },
-  //   );
-  // // }
-  // }
 
   reset(point) {
     this.updateData(
@@ -298,7 +246,6 @@ export default class PointTripEdit extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setDeleteClickHandler(this._callback.clickDelete);
     this._setDatepicker();
-    // this._setDatepickerEnd();
   }
 
   _setInnerHandlers() {

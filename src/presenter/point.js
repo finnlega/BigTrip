@@ -2,6 +2,7 @@ import PointTripView from '../view/point-trip';
 import PointTripEditView from '../view/edit-point';
 import { replace, render, RenderPosition, remove } from '../utils/render';
 import { UserAction, UpdateType } from '../view/const';
+import { isDatesEqual } from '../utils/point';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -97,12 +98,15 @@ export default class Point {
     this._replaceCardToForm();
   }
 
-  _handleFormSubmit(point) {
+  _handleFormSubmit(update) {
     // debugger;
+    const isMinorUpdate = !isDatesEqual(this._point.dateBegin, update.dateBegin) ||
+    !isDatesEqual(this._point.dateEnd, update.dateEnd);
     this._handleChangeData(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
-      point,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      // UpdateType.MINOR,
+      update,
     );
     this._replaceFormToCard();
   }

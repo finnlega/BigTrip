@@ -119,3 +119,5 @@ export const changeCheckboxState = (array, name, boolean) => {
     }
   });
 };
+
+export const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');

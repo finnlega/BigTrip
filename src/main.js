@@ -76,32 +76,7 @@ const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel);
 
 tripPresenter.init();
 
-
-// Закомментировал для проверки на значения по умолчанию при создания новой карточки
-
-// const removeElement = () => {
-//   const data = document.querySelectorAll('.trip-events__item');
-//   const tripEditForm = document.querySelector('.event');
-//   tripEditForm.remove();
-//   for (let i = 0; i <= data.length-1; i++) {
-//     data[i].remove();
-//   }
-// };
-
-// const addNewPoint = () => {
-
-//   const buttonAddNewpoint  = document.querySelector('.trip-main__event-add-btn');
-//   buttonAddNewpoint.addEventListener('click', ()=> {
-//     debugger;
-//     removeElement();
-//     render(tripEvents, new Point, RenderPosition.AFTERBEGIN);
-//     tripPresenter.init()
-//     // tripPresenter.init(points);
-//     // for (let i = 0; i < POINT_COUNT; i++) {
-//     //   renderPoint(listPoint, points[i]);
-//     // }
-//   });
-// };
-
-// addNewPoint();
-
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

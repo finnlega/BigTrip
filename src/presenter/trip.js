@@ -2,9 +2,10 @@ import SortingView from '../view/sorting';
 import ListPointsView from '../view/list-point-trip';
 import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
+import PointNewPresenter from '../presenter/point-new';
 import { remove, render, RenderPosition } from '../utils/render';
 // import { updateItem } from '../utils/common';
-import { SortType, UpdateType, UserAction } from '../view/const';
+import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 import { filter } from '../utils/filter';
 
@@ -28,6 +29,7 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
+    this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction);
   }
 
   init() {
@@ -50,7 +52,14 @@ export default class Trip {
     return filterPoints.sort(compareDates);
   }
 
+  createPoint() {
+    this._currentSort = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
+  }
+
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -143,6 +152,7 @@ export default class Trip {
   }
 
   _clearTripBoard({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());

@@ -72,7 +72,7 @@ const filterPresenter = new FilterPresenter(tripFilters, pointsModel, filterMode
 filterPresenter.init();
 
 // Рендерит точки маршрута
-const tripPresenter = new TripPresenter(tripEvents, pointsModel);
+const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel);
 
 tripPresenter.init();
 

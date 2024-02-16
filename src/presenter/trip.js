@@ -6,25 +6,27 @@ import { remove, render, RenderPosition } from '../utils/render';
 // import { updateItem } from '../utils/common';
 import { SortType, UpdateType, UserAction } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
+import { filter } from '../utils/filter';
 
 export default class Trip {
-  constructor(tripContainer, pointsModel) {
+  constructor(tripContainer, pointsModel, filterModel) {
 
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSort = SortType.DAY;
     this._sortCompanent = null;
-    // this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
 
-    // this._handlePointChange = this._handlePointChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
+
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
 
   }
 
@@ -32,15 +34,20 @@ export default class Trip {
     this._renderTripBoard();
   }
 
-  // получает данные модели и сортирует их
+  // получает данные модели, взависимости о фильтра и сортирует их
   _getPoints() {
+
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filterPoints = filter[filterType](points);
+
     switch(this._currentSort) {
       case SortType.PRICE:
-        return this._pointsModel.getPoints().slice().sort(comparePrice);
+        return filterPoints.sort(comparePrice);
       case SortType.TIME:
-        return this._pointsModel.getPoints().slice().sort(compareTime);
+        return filterPoints.sort(compareTime);
     }
-    return this._pointsModel.getPoints().slice().sort(compareDates);
+    return filterPoints.sort(compareDates);
   }
 
   _handleModeChange() {

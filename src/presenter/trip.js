@@ -148,6 +148,7 @@ export default class Trip {
 
   _renderNoPoint() {
     // рендер заглушки если нет точек маршрута
+
     render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 
@@ -171,6 +172,8 @@ export default class Trip {
     const isEmpty = this._getPoints().length === 0;
 
     if(isEmpty) {
+      this._renderSort();
+      render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
       this._renderNoPoint();
       return;
     }

@@ -14,7 +14,7 @@ import PointsModel from './model/point';
 import FilterModel from './model/filter';
 // import Point from './presenter/point';
 
-const POINT_COUNT = 4;
+const POINT_COUNT = 2;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
@@ -32,7 +32,7 @@ console.log(points);
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 pointsModel.setPoints(points);
-console.log(filterModel);
+// console.log(filterModel);
 
 
 // console.log(filters);

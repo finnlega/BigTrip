@@ -15,10 +15,16 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice : null,
-  dateBegin : dayjs(),
-  dateEnd : null,
-  destination : '',
-  offer : '',
+  dateBegin : dayjs().toDate(),
+  dateEnd : dayjs().toDate(),
+  destination : {
+    pictures: [],
+    description: [],
+  },
+  offer: {
+    offers: [],
+    type: TYPE_POINT_TRIP[0],
+  },
 };
 
 const createTypePointTemplate = () =>
@@ -198,7 +204,7 @@ export default class PointTripEdit extends SmartView {
       this.getElement().querySelector('#event-start-time-1'),
       {
         dateFormat: 'd/m/y H:S',
-        defaultDate: this._data.dateBegin,
+        defaultDate: null,
         onChange: (selectedDate) => {
           const inputElement = this._datepickerStart.input;
           if(compareDate(this._data.dateEnd, selectedDate) < 0) {
@@ -215,11 +221,49 @@ export default class PointTripEdit extends SmartView {
       this.getElement().querySelector('#event-end-time-1'),
       {
         dateFormat: 'd/m/y H:S',
-        defaultDate: this._data.dateEnd,
+        defaultDate: null,
         onChange: this._dateEndChangeHandler,
       },
     );
   }
+
+  // _setDatepicker() {
+  //   if (this._datepicker) {
+  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+  //     // которые создает flatpickr при инициализации
+  //     this._datepicker.destroy();
+  //     this._datepicker = null;
+  //   }
+
+  //   const compareDate = (a, b) => new Date(a) - new Date(b);
+
+  //   const timeInputs = this.getElement().querySelectorAll('.event__input--time');
+  //   console.log(timeInputs);
+
+  //   this._datepickerStart = flatpickr(timeInputs, {
+  //     allowInput: true,
+  //     altInput: true,
+  //     altFormat: "F j, Y",
+  //     dateFormat: 'd/m/y H:S',
+  //     defaultDate: null,
+  //     onChange: (selectedDates, dateStr, instance) => {
+  //       const element = instance.input;
+  //       if(!dateStr) {
+  //         instance.clear();
+  //       }
+  //       if (element === timeInputs[0]) {
+  //         if (compareDate(this._data.dateEnd, selectedDates[0]) < 0) {
+  //           element.setCustomValidity('Дата начала не может быть меньше даты окончания поездки');
+  //         } else {
+  //           element.setCustomValidity('');
+  //           this._dateBeginChangeHandler(selectedDates[0]);
+  //         }
+  //       } else if (element === timeInputs[1]) {
+  //         this._dateEndChangeHandler(selectedDates[0]);
+  //       }
+  //     },
+  //   });
+  // }
 
   reset(point) {
     this.updateData(
@@ -232,6 +276,7 @@ export default class PointTripEdit extends SmartView {
   }
 
   _formSubmitHandler (evt) {
+    // debugger;
     evt.preventDefault();
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
   }
@@ -253,8 +298,18 @@ export default class PointTripEdit extends SmartView {
     this._types.forEach((element) => {
       element.addEventListener('change', this._changeOfferTypeEditHandler);
     });
-    this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
-    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
+    const inputPrice = this.getElement().querySelector('.event__input--price');
+    this._checkValidity(inputPrice);
+    inputPrice.addEventListener('input', (evt) => {
+      this._basePriceEditHandler(evt);
+      this._checkValidity(inputPrice);
+    });
+    const inputNameDestination = this.getElement().querySelector('.event__input--destination');
+    this._checkValidity(inputNameDestination);
+    inputNameDestination.addEventListener('change', (evt) => {
+      this._destinationNameEditHandler(evt);
+      this._checkValidity(inputNameDestination);
+    });
 
     // list offers
 
@@ -264,10 +319,19 @@ export default class PointTripEdit extends SmartView {
     });
   }
 
+  _checkValidity(inputValue) {
+    if (!inputValue.value) {
+      inputValue.setCustomValidity('Не заполнено значение');
+    } else {
+      inputValue.setCustomValidity('');
+    }
+  }
+
+
   _basePriceEditHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: +evt.target.value,
     }, true);
   }
 
@@ -281,16 +345,14 @@ export default class PointTripEdit extends SmartView {
         findByKeyValue(destinations, 'name', nameCity),
       ),
     };
-    this.updateData(updateDestinationName, false);
+    this.updateData(updateDestinationName, true);
   }
 
   _changeOfferTypeEditHandler(evt) {
 
-    // debugger;
     evt.preventDefault();
     const nameType = evt.target.value;
-    // console.log('выбранный тип', evt.target.value);
-    // console.log('все офферы', options);
+
     const updateOfferType = {
       offer: Object.assign(
         {},
@@ -347,6 +409,7 @@ export default class PointTripEdit extends SmartView {
   }
 
   static parsePointToData(point) {
+    console.log(point);
     return Object.assign(
       {},
       point,

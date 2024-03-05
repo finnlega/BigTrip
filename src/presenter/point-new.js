@@ -16,7 +16,7 @@ export default class PointNew {
   }
 
   init() {
-
+    // debugger;
     if(this._pointEditCompanent !== null) {
       return;
     }
@@ -25,8 +25,8 @@ export default class PointNew {
 
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditCompanent.setDeleteClickHandler(this._handleDeleteClick);
-
-    render(this._pointListContainer, this._pointEditCompanent, RenderPosition.AFTERBEGIN);
+    const parentContainer = this._pointListContainer.querySelector('.trip-events__list');
+    render(parentContainer, this._pointEditCompanent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._handlerOnEscKeyDown);
   }

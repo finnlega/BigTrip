@@ -6,6 +6,3 @@ export const filter = {
   [ FilterType.FUTURE ]: (points) => points.filter((item) => isDateInFuture(item.dateBegin) || isDateInPast(item.dateBegin) && isDateInFuture(item.dateEnd)),
   [ FilterType.PAST ]: (points) => points.filter((item) =>isDateInPast(item.dateBegin) || isDateInPast(item.dateBegin) && isDateInFuture(item.dateEnd)),
 };
-
-console.log('filters', filter);
-//

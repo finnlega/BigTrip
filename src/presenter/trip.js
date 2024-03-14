@@ -8,6 +8,7 @@ import { remove, render, RenderPosition } from '../utils/render';
 import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 import { filter } from '../utils/filter';
+import { countTheTotalAmount } from '../view/cost';
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel) {
@@ -58,6 +59,12 @@ export default class Trip {
     this._pointNewPresenter.init();
   }
 
+  _countSumPoints() {
+    const updateCost = countTheTotalAmount(this._getPoints());
+    const costTripElement = document.querySelector('.trip-info__cost-value').textContent = updateCost;
+    return costTripElement;
+  }
+
   _handleModeChange() {
     this._pointNewPresenter.destroy();
     Object
@@ -66,52 +73,42 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
+        this._countSumPoints();
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
+        this._countSumPoints();
         break;
       case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
+        this._countSumPoints();
         break;
     }
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this._pointPresenter[data.id].init(data);
+        this._countSumPoints();
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
         this._clearTripBoard();
         this._renderTripBoard();
+        this._countSumPoints();
         break;
       case UpdateType.MAJOR:
         this._clearTripBoard({resetSortType: true});
         this._renderTripBoard();
+        this._countSumPoints();
         break;
     }
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
   }
-
-  // _handlePointChange(updatePoint) {
-  //   // Вызывает обвновление данных модели
-  //   this._tripPoints = updateItem(this._tripPoints, updatePoint);
-  //   this._pointPresenter[updatePoint.id].init(updatePoint);
-  // }
 
   _handleChangeTypeSort(sortType) {
     if (this._currentSort === sortType) {
@@ -175,11 +172,13 @@ export default class Trip {
       this._renderSort();
       render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
       this._renderNoPoint();
+      this._countSumPoints();
       return;
     }
 
     this._renderSort();
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
     this._renderPoints(points);
+    this._countSumPoints();
   }
 }

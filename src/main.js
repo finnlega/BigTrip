@@ -14,19 +14,11 @@ import PointsModel from './model/point';
 import FilterModel from './model/filter';
 // import Point from './presenter/point';
 
-const POINT_COUNT = 2;
+const POINT_COUNT = 3;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
 
-// const filters = generateFilter(points);
-// const filters = [
-//   {
-//     type: 'everything',
-//     name: 'EVERYTHING',
-//     count: 0,
-//   },
-// ];
 
 // Создает модель
 const pointsModel = new PointsModel();
@@ -78,5 +70,6 @@ tripPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
+  // debugger;
   tripPresenter.createPoint();
 });

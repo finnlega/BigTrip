@@ -7,12 +7,27 @@ import SmartView from './smart';
 import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
 import { changeCheckboxState } from '../utils/point';
-// import { countTheTotalAmount } from '../view/cost';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-// import ListPointsView from './list-point-trip';
 
+console.log('опции', options);
+
+const getDefaultOptions = (type) => {
+  // debugger;
+  const elementArray = options.find((element) => element.type === type);
+  console.log('elementArray', elementArray);
+  if (elementArray && elementArray.offers.length !== 0){
+    elementArray.offers.forEach((offer) => {
+      if(offer.isChecked === 1){
+        offer.isChecked = 0;
+      }
+    });
+    return elementArray.offers;
+  } else {
+    return [];
+  }
+};
 
 const BLANK_POINT = {
   basePrice : null,
@@ -21,9 +36,10 @@ const BLANK_POINT = {
   destination : {
     pictures: [],
     description: [],
+    // name: CITIES[0],
   },
   offer: {
-    offers: [],
+    offers: getDefaultOptions(TYPE_POINT_TRIP[0]),
     type: TYPE_POINT_TRIP[0],
   },
 };
@@ -165,7 +181,6 @@ export default class PointTripEdit extends SmartView {
   }
 
   removeElement() {
-    // debugger;
     super.removeElement();
     if (this._datepickerStart) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -227,44 +242,6 @@ export default class PointTripEdit extends SmartView {
       },
     );
   }
-
-  // _setDatepicker() {
-  //   if (this._datepicker) {
-  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-  //     // которые создает flatpickr при инициализации
-  //     this._datepicker.destroy();
-  //     this._datepicker = null;
-  //   }
-
-  //   const compareDate = (a, b) => new Date(a) - new Date(b);
-
-  //   const timeInputs = this.getElement().querySelectorAll('.event__input--time');
-  //   console.log(timeInputs);
-
-  //   this._datepickerStart = flatpickr(timeInputs, {
-  //     allowInput: true,
-  //     altInput: true,
-  //     altFormat: "F j, Y",
-  //     dateFormat: 'd/m/y H:S',
-  //     defaultDate: null,
-  //     onChange: (selectedDates, dateStr, instance) => {
-  //       const element = instance.input;
-  //       if(!dateStr) {
-  //         instance.clear();
-  //       }
-  //       if (element === timeInputs[0]) {
-  //         if (compareDate(this._data.dateEnd, selectedDates[0]) < 0) {
-  //           element.setCustomValidity('Дата начала не может быть меньше даты окончания поездки');
-  //         } else {
-  //           element.setCustomValidity('');
-  //           this._dateBeginChangeHandler(selectedDates[0]);
-  //         }
-  //       } else if (element === timeInputs[1]) {
-  //         this._dateEndChangeHandler(selectedDates[0]);
-  //       }
-  //     },
-  //   });
-  // }
 
   reset(point) {
     this.updateData(
@@ -332,11 +309,12 @@ export default class PointTripEdit extends SmartView {
   _basePriceEditHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: +evt.target.value,
+      basePrice: Math.abs(Math.trunc(+evt.target.value)),
     }, true);
   }
 
   _destinationNameEditHandler(evt) {
+    // debugger;
     evt.preventDefault();
     const nameCity = evt.target.value;
     const updateDestinationName = {
@@ -350,7 +328,9 @@ export default class PointTripEdit extends SmartView {
   }
 
   _changeOfferTypeEditHandler(evt) {
+    // debugger;
 
+    console.log(this._data.offer.offers.length);
     evt.preventDefault();
     const nameType = evt.target.value;
 
@@ -361,6 +341,11 @@ export default class PointTripEdit extends SmartView {
         findByKeyValue(options, 'type', nameType),
       ),
     };
+
+    updateOfferType.offer.offers.forEach((offer) => {
+      offer.isChecked = 0;
+    });
+
     this._listOffer.style.display = 'none';
     this._nameTypeMarkup.innerHTML = nameType;
     this._typeIcon.src = `img/icons/${nameType}.png`;

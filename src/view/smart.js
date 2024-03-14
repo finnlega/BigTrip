@@ -17,6 +17,7 @@ export default class Smart extends Abstract {
     );
 
     if(justDataupdating) {
+      // console.log('done');
       return;
     }
     this.updateElement();
@@ -28,6 +29,8 @@ export default class Smart extends Abstract {
 
     this.removeElement();
     const newElement = this.getElement();
+    // console.log('newElement', newElement);
+    // console.log('prevElement', prevElement);
     parentElement.replaceChild(newElement, prevElement);
     this.restoreHandlers();
   }

@@ -4,6 +4,7 @@ import { replace, render, RenderPosition, remove } from '../utils/render';
 import { UserAction, UpdateType } from '../view/const';
 import { isDatesEqual } from '../utils/point';
 
+
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDIT: 'EDITING',

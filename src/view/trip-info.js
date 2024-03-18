@@ -3,15 +3,15 @@ import AbstractView from './abstract';
 
 export const getTripInfo = (array) => {
   for (let i = 0; i < array.length-1; i++) {
-    const result = array.length > 3 ? `${array[0].destination.name} &mdash; ... &mdash; ${array[array.length-1].destination.name}` :
-      `${array[0].destination.name} &mdash; ${array[1].destination.name} &mdash; ${array[array.length-1].destination.name}`;
+    const result = array.length > 3 ? `${array[0].destination.name} — ... — ${array[array.length-1].destination.name}` :
+      `${array[0].destination.name} — ${array[1].destination.name} — ${array[array.length-1].destination.name}`;
     return result;
   }
 };
 
 export const getDatesTrip = (array) => {
   for (let i = 0; i < array.length-1; i++) {
-    const result = `${dayjs(array[0].dateBegin).format('DD MMM')} &mdash; ${dayjs(array[array.length-1].dateEnd).format('DD MMM')}`;
+    const result = `${dayjs(array[0].dateBegin).format('DD MMM')} — ${dayjs(array[array.length-1].dateEnd).format('DD MMM')}`;
     return result;
   }
 };

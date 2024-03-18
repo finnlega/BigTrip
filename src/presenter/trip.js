@@ -9,6 +9,7 @@ import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 import { filter } from '../utils/filter';
 import { countTheTotalAmount } from '../view/cost';
+import { getTripInfo, getDatesTrip } from '../view/trip-info';
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel) {
@@ -65,6 +66,14 @@ export default class Trip {
     return costTripElement;
   }
 
+  _updateTripInfo() {
+    const updateInfoTripSum = getTripInfo(this._getPoints());
+    const updateInfoTripDates = getDatesTrip(this._getPoints());
+    const infoTripElementSum = document.querySelector('.trip-info__title').textContent = updateInfoTripSum;
+    const infoTripElementDates = document.querySelector('.trip-info__dates').textContent = updateInfoTripDates;
+    return infoTripElementSum, infoTripElementDates;
+  }
+
   _handleModeChange() {
     this._pointNewPresenter.destroy();
     Object
@@ -78,14 +87,17 @@ export default class Trip {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
         this._countSumPoints();
+        this._updateTripInfo();
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
         this._countSumPoints();
+        this._updateTripInfo();
         break;
       case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
         this._countSumPoints();
+        this._updateTripInfo();
         break;
     }
   }
@@ -96,16 +108,19 @@ export default class Trip {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
         this._countSumPoints();
+        this._updateTripInfo();
         break;
       case UpdateType.MINOR:
         this._clearTripBoard();
         this._renderTripBoard();
         this._countSumPoints();
+        this._updateTripInfo();
         break;
       case UpdateType.MAJOR:
         this._clearTripBoard({resetSortType: true});
         this._renderTripBoard();
         this._countSumPoints();
+        this._updateTripInfo();
         break;
     }
   }
@@ -173,6 +188,7 @@ export default class Trip {
       render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
       this._renderNoPoint();
       this._countSumPoints();
+      this._updateTripInfo();
       return;
     }
 
@@ -180,5 +196,6 @@ export default class Trip {
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
     this._renderPoints(points);
     this._countSumPoints();
+    this._updateTripInfo();
   }
 }

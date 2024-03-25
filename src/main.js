@@ -1,20 +1,20 @@
 import MenuView  from './view/menu';
 import TripInfoView from './view/trip-info';
 import CostView from './view/cost';
-// import FilterView from './view/filters';
 import { generatePoint } from './mock/point';
-// import { generateFilter } from './mock/filter';
-// import { compareDates } from './utils/point';
-// import { countTheTotalAmount } from './view/cost';
-// import { getTripInfo, getDatesTrip } from './view/trip-info';
 import { render, RenderPosition } from './utils/render';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/point';
 import FilterModel from './model/filter';
-// import Point from './presenter/point';
+import OfferModel from './model/offer';
+import { options } from './mock/offer';
 
 const POINT_COUNT = 12;
+
+const offerModel = new OfferModel();
+offerModel.setOffers(options);
+const offers = offerModel.getOffers();
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
@@ -25,8 +25,6 @@ const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 pointsModel.setPoints(points);
 
-// const infoAboutTrip = getTripInfo(points);
-// const infoAboutDateTrip = getDatesTrip(points);
 const tripMain = document.querySelector('.trip-main');
 const tripControls = tripMain.querySelector('.trip-controls__navigation');
 const tripFilters = tripMain.querySelector('.trip-controls__filters');
@@ -53,7 +51,7 @@ const filterPresenter = new FilterPresenter(tripFilters, pointsModel, filterMode
 filterPresenter.init();
 
 // Рендерит точки маршрута
-const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel, offerModel);
 
 tripPresenter.init();
 
@@ -62,3 +60,5 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   // debugger;
   tripPresenter.createPoint();
 });
+
+export { offers };

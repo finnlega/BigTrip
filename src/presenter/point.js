@@ -1,8 +1,10 @@
 import PointTripView from '../view/point-trip';
 import PointTripEditView from '../view/edit-point';
+// import OfferView from '../view/offer';
 import { replace, render, RenderPosition, remove } from '../utils/render';
 import { UserAction, UpdateType } from '../view/const';
 import { isDatesEqual } from '../utils/point';
+// import { offers } from '../main';
 
 
 const Mode = {
@@ -11,10 +13,12 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(pointListContainer, handleChangeData, changeMode) {
+  constructor(pointListContainer, handleChangeData, changeMode, allOffers) {
     this._pointListContainer = pointListContainer;
     this._handleChangeData = handleChangeData;
     this._changeMode = changeMode;
+    this._offers = allOffers;
+    // console.log('Офферы POINT', this._offers);
 
     this._pointCompanent = null;
     this._pointEditCompanent = null;
@@ -35,7 +39,7 @@ export default class Point {
     const prevPointEditCompanent = this._pointEditCompanent;
 
     this._pointCompanent = new PointTripView(point);
-    this._pointEditCompanent = new PointTripEditView(point);
+    this._pointEditCompanent = new PointTripEditView(point,  this._offers);
 
     this._pointCompanent.setEditClickHandler(this._handleEditClick);
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);

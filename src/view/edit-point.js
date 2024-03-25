@@ -1,48 +1,12 @@
 import dayjs from 'dayjs';
 import he from 'he';
-// import { getRandomInteger } from '../utils/common';
 import { replaceString, findByKeyValue } from '../utils/common';
 import { TYPE_POINT_TRIP, CITIES } from './const';
 import SmartView from './smart';
-import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
 import { changeCheckboxState } from '../utils/point';
 import flatpickr from 'flatpickr';
-
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-
-console.log('опции', options);
-
-const getDefaultOptions = (type) => {
-  // debugger;
-  const elementArray = options.find((element) => element.type === type);
-  console.log('elementArray', elementArray);
-  if (elementArray && elementArray.offers.length !== 0){
-    elementArray.offers.forEach((offer) => {
-      if(offer.isChecked === 1){
-        offer.isChecked = 0;
-      }
-    });
-    return elementArray.offers;
-  } else {
-    return [];
-  }
-};
-
-const BLANK_POINT = {
-  basePrice : null,
-  dateBegin : dayjs().toDate(),
-  dateEnd : dayjs().toDate(),
-  destination : {
-    pictures: [],
-    description: [],
-    // name: CITIES[0],
-  },
-  offer: {
-    offers: getDefaultOptions(TYPE_POINT_TRIP[0]),
-    type: TYPE_POINT_TRIP[0],
-  },
-};
 
 const createTypePointTemplate = () =>
 
@@ -54,7 +18,6 @@ const createTypePointTemplate = () =>
 const createCitiesTemplate = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
 const createOfferPointTemplate = (data, isData) => {
-  // debugger;
   const result = isData
     ? data.map((offer) => `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${offer.isChecked ? 'checked' : ''}>
@@ -155,9 +118,9 @@ const editPointTripTemplate = (point) => {
 
 export default class PointTripEdit extends SmartView {
 
-  constructor (point = BLANK_POINT) {
+  constructor (point, allOffers) {
     super();
-
+    this._allOffers = allOffers;
     this._data = PointTripEdit.parsePointToData(point);
     this._datepickerStart = null;
     this._datepickerEnd = null;
@@ -314,7 +277,6 @@ export default class PointTripEdit extends SmartView {
   }
 
   _destinationNameEditHandler(evt) {
-    // debugger;
     evt.preventDefault();
     const nameCity = evt.target.value;
     const updateDestinationName = {
@@ -328,9 +290,6 @@ export default class PointTripEdit extends SmartView {
   }
 
   _changeOfferTypeEditHandler(evt) {
-    // debugger;
-
-    console.log(this._data.offer.offers.length);
     evt.preventDefault();
     const nameType = evt.target.value;
 
@@ -338,7 +297,7 @@ export default class PointTripEdit extends SmartView {
       offer: Object.assign(
         {},
         this._data.offer,
-        findByKeyValue(options, 'type', nameType),
+        findByKeyValue(this._allOffers , 'type', nameType),
       ),
     };
 
@@ -395,7 +354,6 @@ export default class PointTripEdit extends SmartView {
   }
 
   static parsePointToData(point) {
-    console.log(point);
     return Object.assign(
       {},
       point,

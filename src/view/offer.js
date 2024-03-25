@@ -1,6 +1,8 @@
+import AbstractView from './abstract';
+
 // Список офферов
 
-export const getOffer = (array) => {
+const getOffer = (array) => {
   const offers = array.map((element) => {
     if(element.isChecked === 1) {
       return `<li class="event__offer">
@@ -12,3 +14,14 @@ export const getOffer = (array) => {
   });
   return offers.join('');
 };
+
+export default class Offer extends AbstractView {
+  constructor(offer) {
+    super();
+    this._offer = offer;
+  }
+
+  getTemplate() {
+    return getOffer(this._offer);
+  }
+}

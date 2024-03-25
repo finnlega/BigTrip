@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import { convertDate, eventduration } from '../utils/point';
-import { getOffer } from './offer';
+import OfferView from '../view/offer';
 import AbstractView from './abstract';
 
 const createPointTripTemplate = (point) => {
 
   const { basePrice, destination, offer, dateBegin, dateEnd, isFavorite } = point;
+
+  const offerComponent = new OfferView(offer.offers);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -32,7 +34,7 @@ const createPointTripTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${getOffer(offer.offers)}
+          ${offerComponent.getTemplate()}
         </ul>
         <button class="${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>

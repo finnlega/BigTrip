@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 export const TYPE_POINT_TRIP = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 export const TITLES = ['Choose meal', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station', 'guide services', 'rest in spa',
   'special rates' ];
@@ -38,4 +39,18 @@ export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
+};
+
+export const BLANK_POINT = {
+  basePrice : null,
+  dateBegin : dayjs().toDate(),
+  dateEnd : dayjs().toDate(),
+  destination : {
+    pictures: [],
+    description: [],
+  },
+  offer: {
+    offers: [],
+    type: TYPE_POINT_TRIP[0],
+  },
 };

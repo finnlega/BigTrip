@@ -12,10 +12,11 @@ import { countTheTotalAmount } from '../view/cost';
 import { getTripInfo, getDatesTrip } from '../view/trip-info';
 
 export default class Trip {
-  constructor(tripContainer, pointsModel, filterModel) {
+  constructor(tripContainer, pointsModel, filterModel, offerModel) {
 
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._offerModel = offerModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSort = SortType.DAY;
@@ -31,7 +32,9 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction, this._getOffers());
+    // console.log(this._filterModel);
+    // console.log(this._offerModel);
   }
 
   init() {
@@ -44,6 +47,8 @@ export default class Trip {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
     const filterPoints = filter[filterType](points);
+    // const offers = this._offerModel.getOffers();
+    // console.log('офферы1', offers);
 
     switch(this._currentSort) {
       case SortType.PRICE:
@@ -54,9 +59,15 @@ export default class Trip {
     return filterPoints.sort(compareDates);
   }
 
+  _getOffers() {
+    const offers = this._offerModel.getOffers();
+    return offers;
+  }
+
   createPoint() {
     this._currentSort = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    // debugger;
     this._pointNewPresenter.init();
   }
 
@@ -146,8 +157,7 @@ export default class Trip {
 
   _renderPoint(point) {
     // рендер точки маршрута
-
-    const pointPresenter = new PointPresenter(this._listCompanent, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._listCompanent, this._handleViewAction, this._handleModeChange, this._getOffers());
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -160,7 +170,6 @@ export default class Trip {
 
   _renderNoPoint() {
     // рендер заглушки если нет точек маршрута
-
     render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 

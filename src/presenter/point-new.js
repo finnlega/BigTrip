@@ -2,13 +2,15 @@ import PointTripEditView from '../view/edit-point';
 import { render, RenderPosition, remove } from '../utils/render';
 import { UserAction, UpdateType } from '../view/const';
 import { nanoid } from 'nanoid';
+import { BLANK_POINT } from '../view/const';
 
 export default class PointNew {
-  constructor(pointListContainer, handleChangeData) {
+  constructor(pointListContainer, handleChangeData, allOffers) {
     this._pointListContainer = pointListContainer;
     this._handleChangeData = handleChangeData;
 
     this._pointEditCompanent = null;
+    this._offers = allOffers;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlerOnEscKeyDown = this._handlerOnEscKeyDown.bind(this);
@@ -16,12 +18,12 @@ export default class PointNew {
   }
 
   init() {
-    // debugger;
+
     if(this._pointEditCompanent !== null) {
       return;
     }
 
-    this._pointEditCompanent = new PointTripEditView();
+    this._pointEditCompanent = new PointTripEditView(BLANK_POINT, this._offers);
 
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditCompanent.setDeleteClickHandler(this._handleDeleteClick);

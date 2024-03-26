@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { getDateBegin, getDateEnd } from '../utils/point';
 import { getRandomInteger, getElementFromArray, findByKeyValue } from '../utils/common';
 import { TYPE_POINT_TRIP, CITIES} from '../view/const';
-import { options } from './offer';
+import { offers } from '../main';
 import { destinations } from './destinations';
 
 const PRICE_MIN = 100;
@@ -24,7 +24,7 @@ const generatePoint = () => {
     dateEnd: dateEnd.toDate(),
     destination: findByKeyValue(destinations, 'name', nameCity),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offer: findByKeyValue(options, 'type', type),
+    offer: findByKeyValue(offers, 'type', type),
   });
 };
 

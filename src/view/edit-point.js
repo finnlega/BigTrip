@@ -1,24 +1,12 @@
 import dayjs from 'dayjs';
-// import { getRandomInteger } from '../utils/common';
+import he from 'he';
 import { replaceString, findByKeyValue } from '../utils/common';
 import { TYPE_POINT_TRIP, CITIES } from './const';
 import SmartView from './smart';
-import { options } from '../mock/offer';
 import { destinations } from '../mock/destinations';
 import { changeCheckboxState } from '../utils/point';
-// import { countTheTotalAmount } from '../view/cost';
 import flatpickr from 'flatpickr';
-
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-
-
-const BLANK_POINT = {
-  basePrice : null,
-  dateBegin : dayjs(),
-  dateEnd : null,
-  destination : '',
-  offer : '',
-};
 
 const createTypePointTemplate = () =>
 
@@ -30,7 +18,6 @@ const createTypePointTemplate = () =>
 const createCitiesTemplate = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
 const createOfferPointTemplate = (data, isData) => {
-  // debugger;
   const result = isData
     ? data.map((offer) => `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceString(offer.title)}-1" type="checkbox" name="event-offer-${replaceString(offer.title)}" ${offer.isChecked ? 'checked' : ''}>
@@ -78,7 +65,7 @@ const editPointTripTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${isOfferType ? offer.type : ''}
             </label>
-            ${isDestinationName ? `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">`
+            ${isDestinationName ? `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1">`
       : '<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">'}
             <datalist id="destination-list-1">
               ${createCitiesTemplate()}
@@ -131,13 +118,16 @@ const editPointTripTemplate = (point) => {
 
 export default class PointTripEdit extends SmartView {
 
-  constructor (point = BLANK_POINT) {
+  constructor (point, allOffers) {
     super();
-
+    this._allOffers = allOffers;
     this._data = PointTripEdit.parsePointToData(point);
-    this._datepicker = null;
+    this._datepickerStart = null;
+    this._datepickerEnd = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+
     this._changeOfferTypeEditHandler = this._changeOfferTypeEditHandler.bind(this);
     this._basePriceEditHandler = this._basePriceEditHandler.bind(this);
     this._destinationNameEditHandler = this._destinationNameEditHandler.bind(this);
@@ -153,37 +143,67 @@ export default class PointTripEdit extends SmartView {
     this._setDatepicker();
   }
 
-  _setDatepicker() {
-
-    if (this._datepicker) {
+  removeElement() {
+    super.removeElement();
+    if (this._datepickerStart) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
-      this._datepicker.destroy();
-      this._datepicker = null;
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
     }
 
+    if (this._datepickerEnd) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
+
+  // Для каждого Инпута даты напишем datepiker
+
+  _setDatepicker() {
+
+    if (this._datepickerStart) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
+
+    if (this._datepickerEnd) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
     const compareDate = (a, b) => new Date(a) - new Date(b);
 
-    const timeInputs = this.getElement().querySelectorAll('.event__input--time');
-    timeInputs.forEach((element) => {
-      this._datapicker = flatpickr(element, {
+    this._datepickerStart = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
         dateFormat: 'd/m/y H:S',
         defaultDate: null,
         onChange: (selectedDate) => {
-          // debugger;
-          if(element === timeInputs[0]) {
-            if(compareDate(this._data.dateEnd, selectedDate) < 0) {
-              element.setCustomValidity('Дата начала не может быть меншьше даты окончания поездки');
-            } else {
-              element.setCustomValidity('');
-              this._dateBeginChangeHandler(selectedDate);
-            }
-          } else if(element === timeInputs[1]){
-            this._dateEndChangeHandler(selectedDate);
+          const inputElement = this._datepickerStart.input;
+          if(compareDate(this._data.dateEnd, selectedDate) < 0) {
+            inputElement.setCustomValidity('Дата начала не может быть больше даты окончания поездки');
+          } else {
+            inputElement.setCustomValidity('');
+            this._dateBeginChangeHandler(selectedDate);
           }
         },
-      });
-    });
+      },
+    );
+
+    this._datepickerEnd = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:S',
+        defaultDate: null,
+        onChange: this._dateEndChangeHandler,
+      },
+    );
   }
 
   reset(point) {
@@ -197,30 +217,40 @@ export default class PointTripEdit extends SmartView {
   }
 
   _formSubmitHandler (evt) {
+    // debugger;
     evt.preventDefault();
     this._callback.formSubmit(PointTripEdit.parseDataToPoint(this._data));
-    // console.log(this._data);
+  }
 
-    // Добавил updateElement в отправку формы
-    // console.log(this._formSubmitHandler);
-    this.updateElement();
+  _formDeleteClickHandler (evt) {
+    evt.preventDefault();
+    this._callback.clickDelete(PointTripEdit.parseDataToPoint(this._data));
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.clickDelete);
     this._setDatepicker();
-    // console.log('Handlers restored!');
   }
 
   _setInnerHandlers() {
     this._types = this.getElement().querySelectorAll('.event__type-input');
     this._types.forEach((element) => {
-      // console.log(element);
       element.addEventListener('change', this._changeOfferTypeEditHandler);
     });
-    this.getElement().querySelector('.event__input--price').addEventListener('input', this._basePriceEditHandler);
-    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationNameEditHandler);
+    const inputPrice = this.getElement().querySelector('.event__input--price');
+    this._checkValidity(inputPrice);
+    inputPrice.addEventListener('input', (evt) => {
+      this._basePriceEditHandler(evt);
+      this._checkValidity(inputPrice);
+    });
+    const inputNameDestination = this.getElement().querySelector('.event__input--destination');
+    this._checkValidity(inputNameDestination);
+    inputNameDestination.addEventListener('change', (evt) => {
+      this._destinationNameEditHandler(evt);
+      this._checkValidity(inputNameDestination);
+    });
 
     // list offers
 
@@ -230,10 +260,19 @@ export default class PointTripEdit extends SmartView {
     });
   }
 
+  _checkValidity(inputValue) {
+    if (!inputValue.value) {
+      inputValue.setCustomValidity('Не заполнено значение');
+    } else {
+      inputValue.setCustomValidity('');
+    }
+  }
+
+
   _basePriceEditHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Math.abs(Math.trunc(+evt.target.value)),
     }, true);
   }
 
@@ -247,29 +286,30 @@ export default class PointTripEdit extends SmartView {
         findByKeyValue(destinations, 'name', nameCity),
       ),
     };
-    this.updateData(updateDestinationName, false);
+    this.updateData(updateDestinationName, true);
   }
 
   _changeOfferTypeEditHandler(evt) {
-
-    // debugger;
     evt.preventDefault();
     const nameType = evt.target.value;
-    // console.log('выбранный тип', evt.target.value);
-    // console.log('все офферы', options);
+
     const updateOfferType = {
       offer: Object.assign(
         {},
         this._data.offer,
-        findByKeyValue(options, 'type', nameType),
+        findByKeyValue(this._allOffers , 'type', nameType),
       ),
     };
+
+    updateOfferType.offer.offers.forEach((offer) => {
+      offer.isChecked = 0;
+    });
+
     this._listOffer.style.display = 'none';
     this._nameTypeMarkup.innerHTML = nameType;
     this._typeIcon.src = `img/icons/${nameType}.png`;
 
     this.updateData(updateOfferType, false);
-    // console.log(updateOfferType);
   }
 
   _clickOfferhandler(evt) {
@@ -306,6 +346,11 @@ export default class PointTripEdit extends SmartView {
   setFormSubmitHandler (callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('#edit').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler (callback) {
+    this._callback.clickDelete = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {

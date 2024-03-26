@@ -1,7 +1,11 @@
 import PointTripView from '../view/point-trip';
 import PointTripEditView from '../view/edit-point';
+// import OfferView from '../view/offer';
 import { replace, render, RenderPosition, remove } from '../utils/render';
 import { UserAction, UpdateType } from '../view/const';
+import { isDatesEqual } from '../utils/point';
+// import { offers } from '../main';
+
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -9,10 +13,12 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(pointListContainer, handleChangeData, changeMode) {
+  constructor(pointListContainer, handleChangeData, changeMode, allOffers) {
     this._pointListContainer = pointListContainer;
     this._handleChangeData = handleChangeData;
     this._changeMode = changeMode;
+    this._offers = allOffers;
+    // console.log('Офферы POINT', this._offers);
 
     this._pointCompanent = null;
     this._pointEditCompanent = null;
@@ -22,6 +28,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlerOnEscKeyDown = this._handlerOnEscKeyDown.bind(this);
     this._handleOnFavoriteClick = this._handleOnFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -32,10 +39,11 @@ export default class Point {
     const prevPointEditCompanent = this._pointEditCompanent;
 
     this._pointCompanent = new PointTripView(point);
-    this._pointEditCompanent = new PointTripEditView(point);
+    this._pointEditCompanent = new PointTripEditView(point,  this._offers);
 
     this._pointCompanent.setEditClickHandler(this._handleEditClick);
     this._pointEditCompanent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditCompanent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointCompanent.setFavoriteClickhandler(this._handleOnFavoriteClick);
 
     if (prevPointCompanent === null || prevPointEditCompanent === null) {
@@ -76,6 +84,7 @@ export default class Point {
   }
 
   _replaceFormToCard () {
+    // debugger;
     replace(this._pointCompanent, this._pointEditCompanent);
     document.addEventListener('keydown', this._handlerOnEscKeyDown);
     this._mode = Mode.DEFAULT;
@@ -94,19 +103,31 @@ export default class Point {
     this._replaceCardToForm();
   }
 
-  // чем отличается от formSubmitHandle в pointEdit
-
-  _handleFormSubmit(point) {
+  _handleFormSubmit(update) {
+    // debugger;
+    const isMinorUpdate = !isDatesEqual(this._point.dateBegin, update.dateBegin) ||
+    !isDatesEqual(this._point.dateEnd, update.dateEnd);
     this._handleChangeData(
-      UserAction.UPDATE_TASK,
-      UpdateType.MINOR,
-      point);
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      // UpdateType.MINOR,
+      update,
+    );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(point) {
+
+    this._handleChangeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 
   _handleOnFavoriteClick() {
     this._handleChangeData(
-      UserAction.UPDATE_TASK,
+      UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       Object.assign(
         {},

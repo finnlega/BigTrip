@@ -119,3 +119,21 @@ export const changeCheckboxState = (array, name, boolean) => {
     }
   });
 };
+
+export const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
+
+export const getDefaultOptions = (array, type) => {
+  // debugger;
+  const elementArray = array.find((element) => element.type === type);
+  // console.log('elementArray', elementArray);
+  if (elementArray && elementArray.offers.length !== 0){
+    elementArray.offers.forEach((offer) => {
+      if(offer.isChecked === 1){
+        offer.isChecked = 0;
+      }
+    });
+    return elementArray.offers;
+  } else {
+    return [];
+  }
+};

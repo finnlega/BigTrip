@@ -3,7 +3,7 @@ export default class Observer {
     this._observers = [];
   }
 
-  addObserver(observer) {
+  addObserver (observer) {
     this._observers.push(observer);
   }
 
@@ -11,7 +11,9 @@ export default class Observer {
     this._observers = this._observers.filter((existedObserver) => existedObserver !== observer);
   }
 
-  _notify(event, payload) {
+  _notify (event, payload) {
     this._observers.forEach((observer) => observer(event, payload));
   }
 }
+
+

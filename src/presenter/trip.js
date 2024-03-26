@@ -2,173 +2,170 @@ import SortingView from '../view/sorting';
 import ListPointsView from '../view/list-point-trip';
 import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
-import { render, RenderPosition, remove } from '../utils/render';
+import PointNewPresenter from '../presenter/point-new';
+import { remove, render, RenderPosition } from '../utils/render';
 // import { updateItem } from '../utils/common';
-import { SortType, UserAction, UpdateType } from '../view/const';
+import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
+import { filter } from '../utils/filter';
+import { countTheTotalAmount } from '../view/cost';
+import { getTripInfo, getDatesTrip } from '../view/trip-info';
 
 export default class Trip {
-  constructor(tripContainer, pointsModel) {
-    this._tripContainer = tripContainer;
+  constructor(tripContainer, pointsModel, filterModel, offerModel) {
+
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
+    this._offerModel = offerModel;
+    this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSort = SortType.DAY;
-
     this._sortCompanent = null;
-
-    // this._sortCompanent = new SortingView();
     this._listCompanent = new ListPointsView();
-
     this._noPointCompanent = new NoPointTripView();
 
-    // this._handlePointChange = this._handlePointChange.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
-    this._pointsModel.addObserver(this._handleModelEvent);
 
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction, this._getOffers());
+    // console.log(this._filterModel);
+    // console.log(this._offerModel);
   }
 
-  // init(tripPoints) {
-  //   this._tripPoints = tripPoints
-  //     .slice()
-  //     .sort(compareDates);
-
-  //   this._sourcedTripPoints = this._tripPoints.slice();
-
-  //   this._renderSort();
-  //   render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
-
-  //   this._renderTripBoard();
-  // }
-
   init() {
-    this._pointsModel.getPoints().sort(compareDates);
-    this._renderSort();
-    // render(this._tripContainer, this._listCompanent, RenderPosition.BEFOREEND);
-    render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
-
     this._renderTripBoard();
   }
 
+  // получает данные модели, взависимости о фильтра и сортирует их
   _getPoints() {
-    switch (this._currentSort) {
+
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filterPoints = filter[filterType](points);
+    // const offers = this._offerModel.getOffers();
+    // console.log('офферы1', offers);
+
+    switch(this._currentSort) {
       case SortType.PRICE:
-        this._pointsModel.getPoints().slice().sort(comparePrice);
-        // console.log('отсортированный исходный массив по PRICE', this._tripPoints);
-        break;
+        return filterPoints.sort(comparePrice);
       case SortType.TIME:
-        this._pointsModel.getPoints().slice().sort(compareTime);
-        // console.log('отсортированный исходный массив по TIME', this._tripPoints);
-        break;
+        return filterPoints.sort(compareTime);
     }
-    return this._pointsModel.getPoints();
+    return filterPoints.sort(compareDates);
   }
 
-  // _handlePointChange(updatePoint) {
-  //   // Обновляет данные точки маршрута
-  //   // this._tripPoints = updateItem(this._tripPoints, updatePoint);
-  //   this._pointPresenter[updatePoint.id].init(updatePoint);
-  // }
+  _getOffers() {
+    const offers = this._offerModel.getOffers();
+    return offers;
+  }
+
+  createPoint() {
+    this._currentSort = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    // debugger;
+    this._pointNewPresenter.init();
+  }
+
+  _countSumPoints() {
+    const updateCost = countTheTotalAmount(this._getPoints());
+    const costTripElement = document.querySelector('.trip-info__cost-value').textContent = updateCost;
+    return costTripElement;
+  }
+
+  _updateTripInfo() {
+    const updateInfoTripSum = getTripInfo(this._getPoints());
+    const updateInfoTripDates = getDatesTrip(this._getPoints());
+    const infoTripElementSum = document.querySelector('.trip-info__title').textContent = updateInfoTripSum;
+    const infoTripElementDates = document.querySelector('.trip-info__dates').textContent = updateInfoTripDates;
+    return infoTripElementSum, infoTripElementDates;
+  }
+
+  _handleModeChange() {
+    this._pointNewPresenter.destroy();
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    // console.log(actionType, updateType, update);
     switch (actionType) {
-      case UserAction.UPDATE_TASK:
+      case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
-      case UserAction.ADD_TASK:
+      case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
-      case UserAction.DELETE_TASK:
+      case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
     }
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
   }
 
   _handleModelEvent(updateType, data) {
-
-    console.log(updateType, data);
+    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
       case UpdateType.MINOR:
-        // this.parent = document.querySelector('.trip-events__list');
-        // console.log('parent', this.parent);
         this._clearTripBoard();
         this._renderTripBoard();
-        // this._pointPresenter[data.id].init(data);
-
-
-        // this._pointPresenter[point.id] = pointPresenter;
-
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
-        // - обновить список (например, когда задача ушла в избранное)
-        // this._clearPointList();
-        // this._renderPoints();
-        // break;
       case UpdateType.MAJOR:
         this._clearTripBoard({resetSortType: true});
         this._renderTripBoard();
-        // - обновить весь список точек маршрута (например, при переключении фильтра)
+        this._countSumPoints();
+        this._updateTripInfo();
         break;
     }
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
   }
 
-  // _sortPoints(sortType) {
-  //   // console.log('значение сортировки', sortType);
-  //   switch (sortType) {
-  //     case SortType.PRICE:
-  //       this._tripPoints.sort(comparePrice);
-  //       // console.log('отсортированный исходный массив по PRICE', this._tripPoints);
-  //       break;
-  //     case SortType.TIME:
-  //       this._tripPoints.sort(compareTime);
-  //       // console.log('отсортированный исходный массив по TIME', this._tripPoints);
-  //       break;
-  //     default:
-  //       this._tripPoints = this._sourcedTripPoints.slice();
-  //       // console.log('исходный масссив по DAY', this._tripPoints);
-  //       break;
-  //   }
-
-  //   this._currentSort = sortType;
-  // }
-
   _handleChangeTypeSort(sortType) {
-    // console.log('обработчик', this);
     if (this._currentSort === sortType) {
       return;
     }
-
-    // this._sortPoints(sortType);
     this._currentSort = sortType;
-
     this._clearTripBoard();
     this._renderTripBoard();
   }
 
-
   _renderSort() {
     // логика рендера сортировки точек
-    if (this._sortCompanent !== null) {
-      this._sortCompanent = null;
+    if(this._sortCompanent !== null) {
+      this._sortCompanent === null;
     }
-
     this._sortCompanent = new SortingView(this._currentSort);
     this._sortCompanent.setChangeSortHandler(this._handleChangeTypeSort);
     render(this._tripContainer, this._sortCompanent, RenderPosition.BEFOREEND);
+  }
 
+  _renderPoint(point) {
+    // рендер точки маршрута
+    const pointPresenter = new PointPresenter(this._listCompanent, this._handleViewAction, this._handleModeChange, this._getOffers());
+    pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
+  _renderPoints(points) {
+    // логика отрисовки нескольких точек маршрута
+    points.forEach((point) => this._renderPoint(point));
+    console.log('после изменений', points);
   }
 
   _renderNoPoint() {
@@ -176,74 +173,38 @@ export default class Trip {
     render(this._tripContainer, this._noPointCompanent, RenderPosition.BEFOREEND);
   }
 
-  _renderPoint(point) {
-    // рендер точки маршрута
-
-    // const pointPresenter = new PointPresenter(this._listCompanent, this._handlePointChange, this._handleModeChange);
-    const pointPresenter = new PointPresenter(this._listCompanent, this._handleViewAction, this._handleModeChange);
-    // console.log(this);
-    pointPresenter.init(point);
-    this._pointPresenter[point.id] = pointPresenter;
-  }
-
-  _clearPointList() {
+  _clearTripBoard({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-  }
-
-  _handleModeChange() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _renderPoints() {
-
-    // логика отрисовки нескольких точек маршрута
-    // this._tripPoints
-    //   .forEach((tripPoint) => this._renderPoint(tripPoint));
-    this._getPoints()
-      .forEach((point) => this._renderPoint(point));
-  }
-
-  _clearTripBoard({resetSortType = false} = {}) {
-
-    // const taskCount = this._getTasks().length;
-
-    // Object
-    //   .values(this._pointPresenter)
-    //   .forEach((presenter) => presenter.destroy());
-    // this._pointPresenter = {};
-    this._clearPointList();
 
     remove(this._sortCompanent);
     remove(this._noPointCompanent);
 
-    // if (resetRenderedTaskCount) {
-    //   this._renderedTaskCount = TASK_COUNT_PER_STEP;
-    // } else {
-    //   // На случай, если перерисовка доски вызвана
-    //   // уменьшением количества задач (например, удаление или перенос в архив)
-    //   // нужно скорректировать число показанных задач
-    //   this._renderedTaskCount = Math.min(taskCount, this._renderedTaskCount);
-    // }
-
-    if (resetSortType) {
+    if(resetSortType) {
       this._currentSort = SortType.DAY;
     }
   }
 
   _renderTripBoard() {
+    const points = this._getPoints().slice();
     const isEmpty = this._getPoints().length === 0;
 
     if(isEmpty) {
+      this._renderSort();
+      render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
       this._renderNoPoint();
+      this._countSumPoints();
+      this._updateTripInfo();
       return;
     }
-    // this._renderSort();
 
-    this._renderPoints();
+    this._renderSort();
+    render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
+    this._renderPoints(points);
+    this._countSumPoints();
+    this._updateTripInfo();
   }
 }

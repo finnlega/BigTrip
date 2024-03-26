@@ -33,8 +33,6 @@ export const createElement = (template) => {
 };
 
 export const replace = (newChild, oldChild) => {
-  // debugger;
-
   if (newChild instanceof Abstract) {
     newChild = newChild.getElement();
   }

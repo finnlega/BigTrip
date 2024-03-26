@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 export const TYPE_POINT_TRIP = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 export const TITLES = ['Choose meal', 'Book tickets', 'Lunch in city', 'Rent a car', 'Add luggage', 'Switch to comfort', 'Add breakfast', 'Upgrade to a business class', 'Choose the radio station', 'guide services', 'rest in spa',
   'special rates' ];
@@ -23,9 +24,9 @@ export const SortType = {
 };
 
 export const UserAction = {
-  UPDATE_TASK: 'UPDATE_TASK',
-  ADD_TASK: 'ADD_TASK',
-  DELETE_TASK: 'DELETE_TASK',
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
 };
 
 export const UpdateType = {
@@ -33,4 +34,24 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
-//
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+export const BLANK_POINT = {
+  basePrice : null,
+  dateBegin : dayjs().toDate(),
+  dateEnd : dayjs().toDate(),
+  destination : {
+    pictures: [],
+    description: [],
+  },
+  offer: {
+    offers: [],
+    type: TYPE_POINT_TRIP[0],
+  },
+};
+

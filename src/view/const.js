@@ -54,3 +54,4 @@ export const BLANK_POINT = {
     type: TYPE_POINT_TRIP[0],
   },
 };
+

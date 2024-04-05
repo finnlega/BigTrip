@@ -1,8 +1,10 @@
 import MenuView  from './view/menu';
 import TripInfoView from './view/trip-info';
 import CostView from './view/cost';
+// import StatView from './view/stat';
 import { generatePoint } from './mock/point';
 import { render, RenderPosition } from './utils/render';
+import { MenuItem } from './view/const';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/point';
@@ -41,9 +43,10 @@ const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 
 render(tripInfo, new CostView(), RenderPosition.BEFOREEND);
 
-// Рендерит меню
 
-render(tripControls, new MenuView(), RenderPosition.BEFOREEND);
+// Рендерит меню
+const menuCompanent = new MenuView();
+render(tripControls, menuCompanent, RenderPosition.BEFOREEND);
 
 // Рендерит фильтры
 
@@ -55,10 +58,53 @@ const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel, of
 
 tripPresenter.init();
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-  evt.preventDefault();
-  // debugger;
-  tripPresenter.createPoint();
-});
+const buttonAddNewPoint = document.querySelector('.trip-main__event-add-btn');
+
+const handlePointNewFormClose = () => {
+  buttonAddNewPoint.disabled = false;
+  menuCompanent.setMenuItem(MenuItem.TABLE);
+};
+
+const handleMenuClick = (menuItem) => {
+
+  switch (menuItem) {
+    case MenuItem.TABLE:
+
+      // Скрыть Статистику
+      menuCompanent.setMenuItem(MenuItem.TABLE);
+      tripPresenter.init(); // показать доску
+
+      break;
+
+    case MenuItem.STATS:
+      menuCompanent.setMenuItem(MenuItem.STATS);
+      tripPresenter.destroy(); // скрыть доску
+
+      //  Показать статистику
+      break;
+  }
+};
+
+menuCompanent.setMenuClickHandler(handleMenuClick);
+
+const addNewPoint = () => {
+  buttonAddNewPoint.addEventListener('click', (evt) => {
+
+    evt.preventDefault();
+    const activeMenuItem = document.querySelector('.trip-tabs__btn--active').textContent;
+
+    if (activeMenuItem === MenuItem.STATS) {
+      handleMenuClick(MenuItem.TABLE);
+      tripPresenter.createPoint(handlePointNewFormClose);
+      buttonAddNewPoint.disabled = true;
+    } else {
+      tripPresenter.createPoint(handlePointNewFormClose);
+      buttonAddNewPoint.disabled = true;
+    }
+  });
+
+};
+
+addNewPoint();
 
 export { offers };

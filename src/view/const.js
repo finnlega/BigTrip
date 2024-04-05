@@ -55,3 +55,7 @@ export const BLANK_POINT = {
   },
 };
 
+export const MenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};

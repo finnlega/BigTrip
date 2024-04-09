@@ -14,6 +14,7 @@ import { getTripInfo, getDatesTrip } from '../view/trip-info';
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel, offerModel) {
+    // debugger;
     console.log(this);
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
@@ -25,15 +26,12 @@ export default class Trip {
 
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
-    this._statisticCompanent = new StatView();
+    // this._statisticCompanent = new StatView(pointsModel.getPoints());
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
-
-    // this._pointsModel.addObserver(this._handleModelEvent);
-    // this._filterModel.addObserver(this._handleModelEvent);
 
     this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction, this._getOffers());
     // console.log(this._filterModel);
@@ -92,13 +90,13 @@ export default class Trip {
     return infoTripElementSum, infoTripElementDates;
   }
 
-  _showStatistics() {
-    this._statisticCompanent.show();
-  }
+  // _showStatistics() {
+  //   this._statisticCompanent.show();
+  // }
 
-  _hideStatistics() {
-    this._statisticCompanent.hide();
-  }
+  // _hideStatistics() {
+  //   this._statisticCompanent.hide();
+  // }
 
   _handleModeChange() {
     this._pointNewPresenter.destroy();
@@ -222,7 +220,7 @@ export default class Trip {
     this._renderPoints(points);
     this._countSumPoints();
     this._updateTripInfo();
-    // render(this._tripContainer, new StatView(), RenderPosition.BEFOREEND);
+    // render(this._tripContainer, this._statisticCompanent, RenderPosition.BEFOREEND);
   }
 
   destroy() {

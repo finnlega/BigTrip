@@ -1,7 +1,7 @@
 import MenuView  from './view/menu';
 import TripInfoView from './view/trip-info';
 import CostView from './view/cost';
-// import StatView from './view/stat';
+import StatView from './view/stat';
 import { generatePoint } from './mock/point';
 import { render, RenderPosition } from './utils/render';
 import { MenuItem } from './view/const';
@@ -12,8 +12,9 @@ import FilterModel from './model/filter';
 import OfferModel from './model/offer';
 import { options } from './mock/offer';
 
-const POINT_COUNT = 12;
+const POINT_COUNT = 22;
 
+// debugger;
 const offerModel = new OfferModel();
 offerModel.setOffers(options);
 const offers = offerModel.getOffers();
@@ -56,7 +57,8 @@ filterPresenter.init();
 // Рендерит точки маршрута
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel, offerModel);
 
-tripPresenter.init();
+// tripPresenter.init();
+render(tripEvents, new StatView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
 
 const buttonAddNewPoint = document.querySelector('.trip-main__event-add-btn');
 
@@ -80,7 +82,7 @@ const handleMenuClick = (menuItem) => {
       menuCompanent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy(); // скрыть доску
 
-      //  Показать статистику
+      // render(tripEvents, new StatView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
       break;
   }
 };

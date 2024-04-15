@@ -5,19 +5,7 @@ import { TYPE_POINT_TRIP } from './const';
 import { getTimeInMinute } from '../utils/point';
 import { transformTime, sortValues } from '../utils/common';
 
-const countType = (array) => {
-  const result = {};
-  TYPE_POINT_TRIP.forEach((elem) => {
-    const filteredPoints = array.filter((element) => element.offer && element.offer.type === elem);
-    if(filteredPoints.length <= 0) {
-      return;
-    }
-    result[elem.toUpperCase()] = filteredPoints.length;
-  });
-  return result;
-};
-
-const countMoney = (array) => {
+const countElementsByParameter = (array, param) => {
   const result = {};
   const initialValue = 0;
   TYPE_POINT_TRIP.forEach((elem) => {
@@ -25,27 +13,24 @@ const countMoney = (array) => {
     if(filteredPoints.length <= 0) {
       return;
     }
-    result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + element.basePrice, initialValue);
-  });
-  return result;
-};
-
-const countTime = (array) => {
-  const result = {};
-  const initialValue = 0;
-  TYPE_POINT_TRIP.forEach((elem) => {
-    const filteredPoints = array.filter((element) => element.offer && element.offer.type === elem);
-    if(filteredPoints.length <= 0) {
-      return;
+    switch (param) {
+      case 'type':
+        result[elem.toUpperCase()] = filteredPoints.length;
+        break;
+      case 'money':
+        result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + element.basePrice, initialValue);
+        break;
+      case 'time':
+        result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + getTimeInMinute(element), initialValue);
+        break;
     }
-    result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + getTimeInMinute(element), initialValue);
   });
   return result;
 };
 
 const renderMoneyChart = (moneyCtx, points) => {
 
-  const arrays = countMoney(points);
+  const arrays = countElementsByParameter(points, 'money');
   const sortData = sortValues(arrays);
 
   // Сколько за время путешествия было в сумме потрачено?»
@@ -120,7 +105,7 @@ const renderMoneyChart = (moneyCtx, points) => {
 
 const renderTypeChart = (typeCtx, points) => {
 
-  const arrays = countType(points);
+  const arrays = countElementsByParameter(points, 'type');
   const sortData = sortValues(arrays);
 
   // Диаграмма «Type» показывает статистику по типам точек маршрута.
@@ -193,7 +178,7 @@ const renderTypeChart = (typeCtx, points) => {
 
 const renderTimeSpendChart = (timeCtx, points) => {
 
-  const arrays = countTime(points);
+  const arrays = countElementsByParameter(points, 'time');
   const sortData = sortValues(arrays);
 
   // Диаграмма «Time-Spend» показывает, сколько времени было затрачено на каждый тип точки маршрута

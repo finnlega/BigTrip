@@ -49,19 +49,41 @@ export const findByKeyValue = (array, key, value) => {
   return matching;
 };
 
-// Обновление Элемента
+export const transformTime = (time) => {
+  // debugger;
+  const days = Math.floor(time / 1440);
+  const remainingMinutes = time % 1440;
+  const hours = Math.floor(remainingMinutes / 60);
+  const minutes = remainingMinutes % 60;
 
-// export const updateItem = (items, update) => {
-//   const index = items.findIndex((item) => item.id === update.id);
-//   // console.log('индекс', index);
+  // Форматируем результат в зависимости от условий
 
-//   if(index === -1) {
-//     return items;
-//   }
+  if (days === 0) {
+    if (hours === 0) {
+      if (minutes < 10) {
+        return `0${minutes}M`;
+      }
+      return `${minutes}M`;
+    } else {
+      const formattedHours = hours < 10 ? `0${hours}` : hours;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+      return `${formattedHours}H ${formattedMinutes}M`;
+    }
+  } else {
+    const formattedDays = days < 10 ? `0${days}` : days;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
-//   return [
-//     ...items.slice(0, index),
-//     update,
-//     ...items.slice(index+1),
-//   ];
-// };
+    if (hours === 0 && minutes === 0) {
+      return `${formattedDays}D`;
+    } else {
+      return `${formattedDays}D ${formattedHours}H ${formattedMinutes}M`;
+    }
+  }
+};
+
+export const sortValues = (array) => {
+  const entries = Object.entries(array);
+  entries.sort((a, b) => b[1] - a[1]);
+  return Object.fromEntries(entries);
+};

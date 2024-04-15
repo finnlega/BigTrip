@@ -2,15 +2,13 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart';
 import { TYPE_POINT_TRIP } from './const';
+import { getTimeInMinute } from '../utils/point';
+import { transformTime, sortValues } from '../utils/common';
 
-const separateElements = (array) => {
-  // debugger;
-  // console.log('всеЭлем', points);
+const countType = (array) => {
   const result = {};
-
   TYPE_POINT_TRIP.forEach((elem) => {
     const filteredPoints = array.filter((element) => element.offer && element.offer.type === elem);
-
     if(filteredPoints.length <= 0) {
       return;
     }
@@ -19,18 +17,36 @@ const separateElements = (array) => {
   return result;
 };
 
+const countMoney = (array) => {
+  const result = {};
+  const initialValue = 0;
+  TYPE_POINT_TRIP.forEach((elem) => {
+    const filteredPoints = array.filter((element) => element.offer && element.offer.type === elem);
+    if(filteredPoints.length <= 0) {
+      return;
+    }
+    result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + element.basePrice, initialValue);
+  });
+  return result;
+};
+
+const countTime = (array) => {
+  const result = {};
+  const initialValue = 0;
+  TYPE_POINT_TRIP.forEach((elem) => {
+    const filteredPoints = array.filter((element) => element.offer && element.offer.type === elem);
+    if(filteredPoints.length <= 0) {
+      return;
+    }
+    result[elem.toUpperCase()] = filteredPoints.reduce((accumulator, element) => accumulator + getTimeInMinute(element), initialValue);
+  });
+  return result;
+};
+
 const renderMoneyChart = (moneyCtx, points) => {
 
-  const arrays = separateElements(points);
-  const entries = Object.entries(arrays);
-  console.log('ключ и значение', entries);
-
-  // Отсортируем массив пар по значению (по возрастанию)
-  entries.sort((a, b) => b[1] - a[1]);
-
-  // Преобразуем отсортированный массив пар обратно в объект
-  const sortedObject = Object.fromEntries(entries);
-  console.log('sorted obj', sortedObject);
+  const arrays = countMoney(points);
+  const sortData = sortValues(arrays);
 
   // Сколько за время путешествия было в сумме потрачено?»
   // Диаграмма «Money» не учитывает дополнительные опции, только стоимость точек маршрута.
@@ -39,13 +55,13 @@ const renderMoneyChart = (moneyCtx, points) => {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: Object.keys(sortedObject),
+      labels: Object.keys(sortData),
       datasets: [{
-        data: Object.values(sortedObject),
+        data: Object.values(sortData),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
-        barThickness: 40,
+        barThickness: 44,
         minBarLength: 50,
       }],
     },
@@ -58,7 +74,7 @@ const renderMoneyChart = (moneyCtx, points) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => `${val}x`,
+          formatter: (val) => `€ ${val}`,
         },
       },
       title: {
@@ -102,19 +118,24 @@ const renderMoneyChart = (moneyCtx, points) => {
   return moneyChart;
 };
 
-const renderTypeChart = (typeCtx) => {
-  // const arrays = separateElements(points);
+const renderTypeChart = (typeCtx, points) => {
+
+  const arrays = countType(points);
+  const sortData = sortValues(arrays);
+
   // Диаграмма «Type» показывает статистику по типам точек маршрута.
   const typeChart = new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: Object.keys(sortData),
       datasets: [{
-        data: [4, 3, 2, 1, 10, 1],
+        data: Object.values(sortData),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
+        barThickness: 44,
+        minBarLength: 50,
       }],
     },
     options: {
@@ -147,7 +168,6 @@ const renderTypeChart = (typeCtx) => {
             display: false,
             drawBorder: false,
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -158,7 +178,6 @@ const renderTypeChart = (typeCtx) => {
             display: false,
             drawBorder: false,
           },
-          minBarLength: 50,
         }],
       },
       legend: {
@@ -172,92 +191,94 @@ const renderTypeChart = (typeCtx) => {
   return typeChart;
 };
 
-// const renderTimeSpendChart = (timeCtx, points) => {
-//   // Диаграмма «Time-Spend» показывает, сколько времени было затрачено на каждый тип точки маршрута
-//   // Сколько дней, часов и минут в сумме пользователь проведёт в самолёте, такси, ресторане и так далее».
-//   // Формат общего времени, проведённого в точках маршрута, совпадает с форматом продолжительности нахождения в точке маршрута на главной странице.
-//   const timeChart = new Chart(timeCtx, {
-//     plugins: [ChartDataLabels],
-//     type: 'horizontalBar',
-//     data: {
-//       labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
-//       datasets: [{
-//         data: [4, 3, 2, 1, 1, 1],
-//         backgroundColor: '#ffffff',
-//         hoverBackgroundColor: '#ffffff',
-//         anchor: 'start',
-//       }],
-//     },
-//     options: {
-//       plugins: {
-//         datalabels: {
-//           font: {
-//             size: 13,
-//           },
-//           color: '#000000',
-//           anchor: 'end',
-//           align: 'start',
-//           formatter: (val) => '${val}x',
-//         },
-//       },
-//       title: {
-//         display: true,
-//         text: 'TIME',
-//         fontColor: '#000000',
-//         fontSize: 23,
-//         position: 'left',
-//       },
-//       scales: {
-//         yAxes: [{
-//           ticks: {
-//             fontColor: '#000000',
-//             padding: 5,
-//             fontSize: 13,
-//           },
-//           gridLines: {
-//             display: false,
-//             drawBorder: false,
-//           },
-//           barThickness: 44,
-//         }],
-//         xAxes: [{
-//           ticks: {
-//             display: false,
-//             beginAtZero: true,
-//           },
-//           gridLines: {
-//             display: false,
-//             drawBorder: false,
-//           },
-//           minBarLength: 50,
-//         }],
-//       },
-//       legend: {
-//         display: false,
-//       },
-//       tooltips: {
-//         enabled: false,
-//       },
-//     },
-//   });
-//   return timeChart;
-// };
+const renderTimeSpendChart = (timeCtx, points) => {
+
+  const arrays = countTime(points);
+  const sortData = sortValues(arrays);
+
+  // Диаграмма «Time-Spend» показывает, сколько времени было затрачено на каждый тип точки маршрута
+  // Сколько дней, часов и минут в сумме пользователь проведёт в самолёте, такси, ресторане и так далее».
+  // Формат общего времени, проведённого в точках маршрута, совпадает с форматом продолжительности нахождения в точке маршрута на главной странице.
+
+  const timeChart = new Chart(timeCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: Object.keys(sortData),
+      datasets: [{
+        data: Object.values(sortData),
+        backgroundColor: '#ffffff',
+        hoverBackgroundColor: '#ffffff',
+        anchor: 'start',
+        barThickness: 44,
+        minBarLength: 50,
+      }],
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13,
+          },
+          color: '#000000',
+          anchor: 'end',
+          align: 'start',
+          formatter: (val) => `${transformTime(val)}`,
+        },
+      },
+      title: {
+        display: true,
+        text: 'TIME',
+        fontColor: '#000000',
+        fontSize: 23,
+        position: 'left',
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#000000',
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
+  });
+  return timeChart;
+};
 
 
 const createStatsTemplate = () => `<section class="statistics">
-  <h2 class="visually-hidden">Trip statistics</h2>
-
-  <div class="statistics__item">
-    <canvas class="statistics__chart" id="money" width="900"></canvas>
-  </div>
-
-  <div class="statistics__item">
-    <canvas class="statistics__chart" id="type" width="900"></canvas>
-  </div>
-
-  <div class="statistics__item">
-    <canvas class="statistics__chart" id="time-spend" width="900"></canvas>
-  </div>
+    <h2 class="visually-hidden">Trip statistics</h2>
+    <div class="statistics__item">
+      <canvas class="statistics__chart" id="money" width="900"></canvas>
+    </div>
+    <div class="statistics__item">
+      <canvas class="statistics__chart" id="type" width="900"></canvas>
+    </div>
+    <div class="statistics__item">
+      <canvas class="statistics__chart" id="time-spend" width="900"></canvas>
+    </div>
   </section>`;
 
 export default class Stat extends SmartView {
@@ -285,25 +306,23 @@ export default class Stat extends SmartView {
 
   _setCharts() {
     // диаграммы
-    // if(this._moneyCtx !== null || this._typeCtx !== null || this._timeCtx !== null) {
-    if(this._moneyCtx !== null || this._typeCtx !== null) {
+    if(this._moneyCtx !== null || this._typeCtx !== null || this._timeCtx !== null) {
       this._moneyCtx = null;
       this._typeCtx = null;
-      // this._timeCtx = null;
+      this._timeCtx = null;
     }
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
-    // const timeCtx = this.getElement().querySelector('#time-spend');
+    const timeCtx = this.getElement().querySelector('#time-spend');
 
     const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 10;
-    typeCtx.height = BAR_HEIGHT * 5;
-    // timeCtx.height = BAR_HEIGHT * 5;
+    moneyCtx.height = BAR_HEIGHT * 8;
+    typeCtx.height = BAR_HEIGHT * 8;
+    timeCtx.height = BAR_HEIGHT * 8;
 
-    console.log('точки', this._points);
     this._moneyCtx = renderMoneyChart(moneyCtx, this._points);
-    this._typeCtx = renderTypeChart(typeCtx);
-    // this._timeCtx = renderTimeSpendChart(timeCtx);
+    this._typeCtx = renderTypeChart(typeCtx, this._points);
+    this._timeCtx = renderTimeSpendChart(timeCtx, this._points);
   }
 }
 

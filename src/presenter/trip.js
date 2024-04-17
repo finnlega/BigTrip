@@ -1,11 +1,9 @@
 import SortingView from '../view/sorting';
 import ListPointsView from '../view/list-point-trip';
 import NoPointTripView from '../view/list-empty';
-import StatView from '../view/stat';
 import PointPresenter from '../presenter/point';
 import PointNewPresenter from '../presenter/point-new';
 import { remove, render, RenderPosition } from '../utils/render';
-// import { updateItem } from '../utils/common';
 import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 import { filter } from '../utils/filter';
@@ -26,7 +24,6 @@ export default class Trip {
 
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
-    // this._statisticCompanent = new StatView(pointsModel.getPoints());
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -72,7 +69,6 @@ export default class Trip {
   createPoint(callback) {
     this._currentSort = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // debugger;
     this._pointNewPresenter.init(callback);
   }
 
@@ -90,14 +86,6 @@ export default class Trip {
     return infoTripElementSum, infoTripElementDates;
   }
 
-  // _showStatistics() {
-  //   this._statisticCompanent.show();
-  // }
-
-  // _hideStatistics() {
-  //   this._statisticCompanent.hide();
-  // }
-
   _handleModeChange() {
     this._pointNewPresenter.destroy();
     Object
@@ -106,7 +94,6 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
@@ -127,7 +114,6 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
@@ -220,7 +206,6 @@ export default class Trip {
     this._renderPoints(points);
     this._countSumPoints();
     this._updateTripInfo();
-    // render(this._tripContainer, this._statisticCompanent, RenderPosition.BEFOREEND);
   }
 
   destroy() {

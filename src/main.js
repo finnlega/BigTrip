@@ -3,7 +3,7 @@ import TripInfoView from './view/trip-info';
 import CostView from './view/cost';
 import StatView from './view/stat';
 import { generatePoint } from './mock/point';
-import { render, RenderPosition } from './utils/render';
+import { render, RenderPosition, remove } from './utils/render';
 import { MenuItem } from './view/const';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
@@ -47,6 +47,8 @@ render(tripInfo, new CostView(), RenderPosition.BEFOREEND);
 
 // Рендерит меню
 const menuCompanent = new MenuView();
+let statisticsCompanent = null;
+
 render(tripControls, menuCompanent, RenderPosition.BEFOREEND);
 
 // Рендерит фильтры
@@ -57,8 +59,7 @@ filterPresenter.init();
 // Рендерит точки маршрута
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel, offerModel);
 
-// tripPresenter.init();
-render(tripEvents, new StatView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
+tripPresenter.init();
 
 const buttonAddNewPoint = document.querySelector('.trip-main__event-add-btn');
 
@@ -71,18 +72,16 @@ const handleMenuClick = (menuItem) => {
 
   switch (menuItem) {
     case MenuItem.TABLE:
-
-      // Скрыть Статистику
+      remove(statisticsCompanent); // Скрыть Статистику
       menuCompanent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init(); // показать доску
-
       break;
 
     case MenuItem.STATS:
       menuCompanent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy(); // скрыть доску
-
-      // render(tripEvents, new StatView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
+      statisticsCompanent = new StatView(pointsModel.getPoints());
+      render(tripEvents, statisticsCompanent, RenderPosition.BEFOREEND); // показать статистику
       break;
   }
 };
@@ -104,7 +103,6 @@ const addNewPoint = () => {
       buttonAddNewPoint.disabled = true;
     }
   });
-
 };
 
 addNewPoint();

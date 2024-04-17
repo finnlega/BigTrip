@@ -73,6 +73,7 @@ const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       remove(statisticsCompanent); // Скрыть Статистику
+      statisticsCompanent = null;
       menuCompanent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init(); // показать доску
       break;
@@ -80,8 +81,12 @@ const handleMenuClick = (menuItem) => {
     case MenuItem.STATS:
       menuCompanent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy(); // скрыть доску
+      if (statisticsCompanent !== null) {
+        return;
+      }
+      // показать статистику
       statisticsCompanent = new StatView(pointsModel.getPoints());
-      render(tripEvents, statisticsCompanent, RenderPosition.BEFOREEND); // показать статистику
+      render(tripEvents, statisticsCompanent, RenderPosition.BEFOREEND);
       break;
   }
 };

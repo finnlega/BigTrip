@@ -281,13 +281,16 @@ export default class Stat extends SmartView {
     return createStatsTemplate();
   }
 
-  _setCharts() {
-    // диаграммы
+  _resetCharts() {
     if(this._moneyCtx !== null || this._typeCtx !== null || this._timeCtx !== null) {
       this._moneyCtx = null;
       this._typeCtx = null;
       this._timeCtx = null;
     }
+  }
+
+  _setCharts() {
+    this._resetCharts();
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');

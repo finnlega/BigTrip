@@ -4,7 +4,6 @@ import NoPointTripView from '../view/list-empty';
 import PointPresenter from '../presenter/point';
 import PointNewPresenter from '../presenter/point-new';
 import { remove, render, RenderPosition } from '../utils/render';
-// import { updateItem } from '../utils/common';
 import { SortType, UpdateType, UserAction, FilterType } from '../view/const';
 import { compareDates, comparePrice, compareTime } from '../utils/point';
 import { filter } from '../utils/filter';
@@ -13,7 +12,8 @@ import { getTripInfo, getDatesTrip } from '../view/trip-info';
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel, offerModel) {
-
+    // debugger;
+    console.log(this);
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._offerModel = offerModel;
@@ -21,6 +21,7 @@ export default class Trip {
     this._pointPresenter = {};
     this._currentSort = SortType.DAY;
     this._sortCompanent = null;
+
     this._listCompanent = new ListPointsView();
     this._noPointCompanent = new NoPointTripView();
 
@@ -29,16 +30,17 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleChangeTypeSort = this._handleChangeTypeSort.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._pointNewPresenter = new PointNewPresenter(tripContainer, this._handleViewAction, this._getOffers());
     // console.log(this._filterModel);
     // console.log(this._offerModel);
   }
 
   init() {
+    this._clearTripBoard();
     this._renderTripBoard();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   // получает данные модели, взависимости о фильтра и сортирует их
@@ -64,11 +66,10 @@ export default class Trip {
     return offers;
   }
 
-  createPoint() {
+  createPoint(callback) {
     this._currentSort = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // debugger;
-    this._pointNewPresenter.init();
+    this._pointNewPresenter.init(callback);
   }
 
   _countSumPoints() {
@@ -93,7 +94,6 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
@@ -114,7 +114,6 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
@@ -202,9 +201,24 @@ export default class Trip {
     }
 
     this._renderSort();
+
     render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
     this._renderPoints(points);
     this._countSumPoints();
     this._updateTripInfo();
+  }
+
+  destroy() {
+    this._clearTripBoard({resetSortType: true});
+
+    remove(this._listCompanent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  renderSort () {
+    this._renderSort();
+    render(this._sortCompanent, this._listCompanent, RenderPosition.BEFOREEND);
   }
 }

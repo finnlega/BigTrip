@@ -11,14 +11,15 @@ export default class PointNew {
 
     this._pointEditCompanent = null;
     this._offers = allOffers;
+    this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlerOnEscKeyDown = this._handlerOnEscKeyDown.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init() {
-
+  init(callback) {
+    this._destroyCallback = callback;
     if(this._pointEditCompanent !== null) {
       return;
     }
@@ -37,6 +38,11 @@ export default class PointNew {
     if(this._pointEditCompanent === null) {
       return;
     }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
     remove(this._pointEditCompanent);
     this._pointEditCompanent = null;
 

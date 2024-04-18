@@ -11,6 +11,7 @@ import PointsModel from './model/point';
 import FilterModel from './model/filter';
 import OfferModel from './model/offer';
 import { options } from './mock/offer';
+import { restoreCssClass } from './utils/common';
 
 const POINT_COUNT = 22;
 
@@ -21,7 +22,6 @@ const offers = offerModel.getOffers();
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
-
 
 // Создает модель
 const pointsModel = new PointsModel();
@@ -35,7 +35,6 @@ const tripEvents = document.querySelector('.trip-events');
 
 // Рендерит информацию о маршруте и датах
 
-// render(tripMain, new TripInfoView(infoAboutTrip, infoAboutDateTrip), RenderPosition.AFTERBEGIN);
 render(tripMain, new TripInfoView(), RenderPosition.AFTERBEGIN);
 
 const tripInfo = tripMain.querySelector('.trip-main__trip-info');
@@ -43,7 +42,6 @@ const tripInfo = tripMain.querySelector('.trip-main__trip-info');
 // рендерит общую стоимость
 
 render(tripInfo, new CostView(), RenderPosition.BEFOREEND);
-
 
 // Рендерит меню
 const menuCompanent = new MenuView();
@@ -74,11 +72,15 @@ const handleMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       remove(statisticsCompanent); // Скрыть Статистику
       statisticsCompanent = null;
+      restoreCssClass('.page-body__container::after'); // навешиваем класс с псевдоэлементом
+      tripFilters.classList.remove('visually-hidden');
       menuCompanent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init(); // показать доску
       break;
 
     case MenuItem.STATS:
+      document.styleSheets[0].insertRule('.page-body__container::after {display: none}'); // Устанавливаем свойство display в none, чтобы скрыть псевдоэлемент
+      tripFilters.classList.add('visually-hidden');
       menuCompanent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy(); // скрыть доску
       if (statisticsCompanent !== null) {

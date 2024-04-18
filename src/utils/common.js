@@ -87,3 +87,17 @@ export const sortValues = (array) => {
   entries.sort((a, b) => b[1] - a[1]);
   return Object.fromEntries(entries);
 };
+
+export const restoreCssClass = (cssClass) => {
+  const rules = document.styleSheets[0].cssRules;
+  let ruleIndex;
+  for (let i = 0; i < rules.length; i++) {
+    if (rules[i].selectorText === cssClass) {
+      ruleIndex = i;
+      break;
+    }
+  }
+  if (ruleIndex !== undefined) {
+    document.styleSheets[0].deleteRule(ruleIndex);
+  }
+};
